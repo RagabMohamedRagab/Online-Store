@@ -1,0 +1,286 @@
+﻿@{
+    ViewData["Title"] = "Cart";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var Listt = ViewBag.Listt;
+}
+<head>
+    <link href="~/ElaAdmin-master/ElaAdmin-master/assets/css/Created/fontawesome-free-6.1.1-web/css/all.css" rel="stylesheet" />
+</head>
+<style>
+    .circleQuantity {
+        position: absolute;
+        left: 59px;
+        width: 20px;
+        height: 20px;
+        line-height: 20px;
+        text-align: center;
+        border-radius: 50%;
+        font-size: 10px;
+        color: #FFF;
+        background-color: #D10024;
+    }
+</style>
+<br />
+<br />
+<br />
+<div id="content" class="site-content">
+    <div id="primary" class="content-area">
+        <main id="main" class="site-main">
+            <div class="cart-main">
+                <div class="container">
+                    <div class="col-md-12">
+                        <div class="page type-page status-publish hentry">
+                            <div class="entry-content">
+                                <div class="woocommerce table-tabs" id="responsiveTabs">
+                                    @*notify*@
+                                    <div hidden class="panel-group" id="accordion">
+                                        <div class="panel panel-default">
+                                            <div id="aTag" class="panel-heading">
+                                                <div class="panel-title">
+                                                    <a style="cursor:pointer">
+                                                        <span class="fa-3x"> <i id="shake" class="fa fa-solid fa-bell fa-shake small"></i></span><span class="circleQuantity">0</span> <span style="font-size: larger; vertical-align: super; margin-left: 16px; ">Products that are no longer available are automatically deleted</span>
+                                                    </a>
+                                                    <a style="float: right; margin-top: 24px; cursor: pointer ">
+                                                        <i id="downAngle" class="fa fa-solid fa-angle-down"></i>
+                                                        <i id="upAngle" class="fa fa-solid fa-angle-up"></i>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <div hidden="hidden" id="collapseOne">
+                                                       
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <ul class="nav nav-tabs">
+                                        <li class="active"><b class="arrow-up"></b><a data-toggle="tab" href="#sectionA">Cart (<span class="counter">0</span>) </a></li>
+                                    </ul>
+                                    <div class="tab-content">
+                                        <div id="sectionA" class="tab-pane fade in active">
+                                            <form>
+                                                <div class="col-md-offset-9" style="text-align: center;">
+                                                    <label class="form-control">Total Price(<span class="TotalItems">0</span>) : <span id="TotalPrice">0</span> LE</label>
+                                                </div>
+                                                <div class="dbody">
+                                                    <table class="table table-hover" style="border-top:hidden">
+
+                                                        <tbody class="tbody">
+                                                        </tbody>
+                                                    </table>
+                                                    <div id="outofstock" hidden class="col-md-6" style="margin-bottom: 10px;">
+                                                        <strong style="color : #D10024">Note : </strong>Products that are Out Of Stock will not be purchased when clicking on Checkout button and will remain in the Cart
+                                                    </div>
+                                                    <div id="btns" style="margin-left:50%" class="col-md-6">
+                                                        <a class="primary-btn order-submit" id="btncheckout" style="margin-bottom: 10px; background-color: green; float: right; box-shadow: 0 4px 8px 0 rgb(0 0 0 / 20%);" href="/Home/CheckOut">Check Out(<span class="TotalItems">0</span>)</a>
+                                                        <a class="primary-btn order-submit" style="margin-bottom: 10px; float: right; box-shadow: 0 4px 8px 0 rgb(0 0 0 / 20%);" href="javascript:DeleteCart()">Delete Cart</a>
+                                                    </div>
+                                                     
+                                                </div>
+                                                
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div><!-- .entry-content -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+<br />
+<br />
+<br />
+<br />
+<script src="~/js/jquery.min.js"></script>
+<script>
+    var arr = [];
+    $(document).ready(function () {
+        loadCart();
+
+        $("#upAngle").hide();
+
+        $("#aTag").click(function () {
+            if ($("#collapseOne").attr('hidden') == 'hidden') {
+                $("#collapseOne").show(300);
+                $("#collapseOne").removeAttr('hidden');
+                $(".circleQuantity").hide();
+                $("#shake").removeClass('fa-shake');
+                $("#downAngle").hide();
+                $("#upAngle").show();
+
+            }
+            else {
+                $("#collapseOne").hide(300);
+                $("#collapseOne").attr('hidden', 'hidden');
+                $("#downAngle").show();
+                $("#upAngle").hide();
+            }
+        });
+    });
+
+    function loadCart() {
+        var html = "";
+        var totalprice = 0;
+        var totalproducts = 0;
+        var notAvailableItems = "";
+        var outofstockcounter = 0;
+        var notificationcount = 0;
+        var z = getItemStorage("Cart") || [];
+
+        if (z.length == 0) {
+            html += '<img src="/img/Index/download.png" style="border-radius: 50%;width: 100px;margin-left: auto;margin-right: auto;display: block;"/>';
+            html += '<br/><div style="text-align: center;display: block;"><strong>Your cart is empty</strong></div><br/>';
+            html += '<a class="primary-btn order-submit" href="/Home/Index" style="margin-left: auto;margin-right: auto;display: block;width: 35%;">Start Shopping</a>';
+            $('.dbody').html(html);
+            $('#TotalPrice').html(0);
+            $('.TotalItems').html(0);
+            $('.counter').html(0);
+            $('.circleQuantity').html(0);
+        }
+        else {
+            $.ajax({
+                type: "GET",
+                url: "/Home/GetAvailableProducts",
+                dataType: "json",
+                success: function (result) {
+                    $.each(result, function (key, item) {
+                        arr[key] = item;
+                    });
+                    $.each(z, function (key, item) {
+                        if (arr[item.Code].isAvailable == "Available") {
+                            if (arr[item.Code].quantity > 0) {
+                                totalprice = totalprice + (item.Quantity * arr[item.Code].productPrice);
+                                totalproducts = totalproducts + (item.Quantity * 1);
+                                html += '<tr class="cart_item" style="text-align: center;">';
+                                html += '<td style="vertical-align: middle;" data-title="cbox" class="product-cbox col-md-1">';
+                                html += '<a href="javascript:remove(' + "'" + item.Code + "'" + ')" data-toggle="blog-tags" data-placement="top" title="Remove">';
+                                html += '<i class="fa fa-trash" style="font-size:x-large; "></i></a></td >';
+                                html += '<td style="vertical-align: middle;" data-title="Image" class="product-Image col-md-1">';
+                                html += '<div class="product-detail">';
+                                html += '<div class="col-md-3"><img style="height: 111px;" src="/Images/' + arr[item.Code].image+'" alt="cart-product-1"/></div>';
+                                html += '</td>';
+                                html += '<td style="vertical-align: middle;" data-title="Product" class="product-name col-md-5">';
+                                html += '<div class="col-md-8"><div><a href="javascript:gotoDetails(' + "'" + item.Code + "'" + ')"><strong>' + arr[item.Code].productName + '</strong></a></div>';
+                                html += '<div><strong>Price: </strong>' + arr[item.Code].productPrice + ' LE</div></div>';
+                                html += '</div>';
+                                html += '</td>';
+                                html += '<td style="vertical-align: middle;" data-title="action" class="product-action col-md-2">';
+                                html += '<div class="dropdown">';
+                                html += '<div class="col-md-7">';
+                                html += '<input style="width: 70px;" data-item="' + key + '" type="number" value="' + item.Quantity + '">';
+                                html += '</div>';
+                                html += '<div class="col-md-2">';
+                                html += '<a href="javascript:go({key:' + key + ",code:'" + item.Code + "'" + '})"';
+                                html += '> <i class="fa fa-check" style="font-size:xx-large"></i></a></div></div></td>';
+                                html += '<td style="vertical-align: middle;" data-title="action" class="product-action col-md-3">';
+                                html += '<div><span id="tprice"></span>' + (item.Quantity * arr[item.Code].productPrice) + ' LE </div>';
+                                html += '</td>';
+                                html += '</tr>';
+                            }
+                            else {
+                                debugger;
+                                outofstockcounter++;
+                                html += '<tr class="cart_item" style="text-align: center;">';
+                                html += '<td style="vertical-align: middle;" data-title="cbox" class="product-cbox col-md-1">';
+                                html += '<a href="javascript:remove(' + "'" + item.Code + "'" + ')" data-toggle="blog-tags" data-placement="top" title="Remove">';
+                                html += '<i class="fa fa-trash" style="font-size:x-large; "></i></a></td >';
+                                html += '<td style="vertical-align: middle;" data-title="Image" class="product-Image col-md-1">';
+                                html += '<div class="product-detail">';
+                                html += '<div class="col-md-3"><img style="height: 111px;" src="/Images/' + arr[item.Code].image +'" alt="cart-product-1"/></div>';
+                                html += '</td>';
+                                html += '<td style="vertical-align: middle;" data-title="Product" class="product-name col-md-5">';
+                                html += '<div class="col-md-8"><div><a href="javascript:gotoDetails(' + "'" + item.Code + "'" + ')"><strong>' + arr[item.Code].productName + '</strong></a></div>';
+                                html += '<div><strong>Price: </strong>' + arr[item.Code].productPrice + ' LE</div></div>';
+                                html += '</div>';
+                                html += '</td>';
+                                html += '<td style="vertical-align: middle;" data-title="action" class="product-action col-md-2">';
+                                html += '<span style="color : #D10024">Out Of Stock</span>';
+                                html += '</td>';
+                                html += '<td style="vertical-align: middle;" data-title="action" class="product-action col-md-2">';
+                                html += '<span style="font-size: x-large;">-</span>';
+                                html += '</td>';
+                                html += '</tr>';
+                            }
+                        }
+                        else {
+                            notAvailableItems += '<div class="panel-body">';
+                            notAvailableItems += '<h4>- <span style="color: #D10024">' + arr[item.Code].productName+ '</span> is no longer available</h4>';
+                            notAvailableItems += '</div>';
+                            notificationcount++;
+                            $("#accordion").show();
+                        }
+                        $('.tbody').html(html);
+                        $('#collapseOne').html(notAvailableItems);
+
+                    });
+                    $('#TotalPrice').html(totalprice);
+                    $('.TotalItems').html(totalproducts);
+                    $('.counter').html(z.length - notificationcount);
+                    $('.circleQuantity').html(notificationcount);
+                    if (outofstockcounter > 0) {
+                        $("#outofstock").show();
+                        $("#btns").css('margin-left','');
+                    }
+                    else {
+                        $("#outofstock").hide();
+                        $("#btns").css('margin-left','50%');
+                    }
+                }
+
+            });
+        }
+    }
+
+    function DeleteCart() {
+        removeStorage("Cart");
+        loadCart();
+        cartconnection();
+        //اعمل ماسدج بتقول تم حذف الكارت بنجاح 
+    }
+    function go(key) {
+        var z = getItemStorage("Cart") || [];
+        let x = $(`[data-item=${key.key}]`).val();
+        if (x > 0 && x <= arr[key.code].quantity) {
+            z[key.key].Quantity = x;
+            setItemStorage("Cart", z);
+            $('#btncheckout').removeClass('primary-btn order-submit disabled').addClass('primary-btn order-submit').css('background-color', '');
+            loadCart();
+            cartconnection();
+        }
+        else {
+            $(`[data-item=${key.key}]`).css("border", "2px solid red");
+            $('#btncheckout').css('background-color', 'grey').addClass('disabled');
+        }
+    }
+    function remove(ProductCode) {
+        var z = getItemStorage("Cart") || [];
+        $.each(z, function (key, item) {
+            if (item.Code == ProductCode) {
+                let itemIndex = z.indexOf(item);
+                removeItemStorage("Cart", itemIndex);
+            }
+        });
+        loadCart();
+        cartconnection();
+    }
+
+
+    function setItemStorage(itemKey, itemValue) {
+        localStorage.setItem(itemKey, JSON.stringify(itemValue));
+    }
+    function getItemStorage(itemKey) {
+        return JSON.parse(localStorage.getItem(itemKey));
+    }
+
+    function addValueToItemStorage(itemKey, val) {
+        let y = getItemStorage(itemKey);
+        y.push(val);
+        setItemStorage(itemKey, y);
+    }
+    function removeItemStorage(itemKey, val) {
+        let item = getItemStorage(itemKey);
+        item.splice(val, 1);
+        setItemStorage(itemKey, item);
+    }
+</script>

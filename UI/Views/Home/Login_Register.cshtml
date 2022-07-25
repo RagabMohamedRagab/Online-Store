@@ -1,0 +1,80 @@
+﻿@{
+    ViewData["Title"] = "Login_Register";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var WishList = ViewBag.Wishlist;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<body>
+    <input hidden id="wishlist" value="@WishList"/>
+    <div class="section">
+        <div class="container">
+            <div class="row">
+                <br />
+                <div class="col-md-5 order-details" style=" margin-top: 35px;">
+                    <div class="billing-details">
+                        <div class="section-title text-center" >
+                            <h3 class="title" style="color: #D10024;">LogIn</h3>
+                        </div>
+                        <div class="caption" id="createAccDiv">
+                            <div class="form-group">
+                                <input id="telephone1" autocomplete="off" class="input" type="tel" placeholder="Telephone">
+                                <span id="validphone11" style="display: none; font-size: 13px; color: #D10024">Please enter your Phone</span>
+                                <span id="validphone12" style="display: none; font-size: 13px; color: #D10024">This Phone isn’t Exist !!</span>
+                                <span id="validphone13" hidden style="font-size: 13px; color: #D10024">You must write only numbers</span>
+                                <span id="validphone14" style="display: none; font-size: 13px; color: #D10024">Phone must be 11 numbers</span>
+                            </div>
+                            <div class="form-group">
+                                <input id="password1" autocomplete="off" class="input" type="password" placeholder="Password">
+                                <span id="validpassword11" style="display: none; font-size: 13px; color: #D10024" >Please enter your Password</span>
+                                <span id="validpassword12" style="display: none; font-size: 13px; color: #D10024">Password is Wrong , Try again..</span>
+                            </div>
+                        </div>
+                        <button id="btnLogin" class="primary-btn btn-block order-submit">LogIn &nbsp; <i class="fa fa-sign-in"></i> </button>
+
+                    </div>
+                </div>
+                <div class="col-lg-offset-7 order-details" style=" margin-top: 35px;">
+                    <div class="billing-details">
+                        <div class="section-title text-center">
+                            <h3 class="title" style="color: #D10024;">Create Account</h3>
+                        </div>
+                        <div class="caption" id="createAccDiv">
+                            <div class="form-group">
+                                <input id="fname" autocomplete="off" class="input" type="text" placeholder="First Name">
+                                <span id="validfname" style="display: none; font-size: 13px; color: #D10024">Required field</span>
+                                <span id="invalidfname" style="display: none; font-size: 13px; color: #D10024">Invalid Name</span>
+                            </div>
+                            <div class="form-group">
+                                <input id="lname" autocomplete="off" class="input" type="text" placeholder="Last Name">
+                                <span id="validlname" style="display: none; font-size: 13px; color: #D10024">Required field</span>
+                                <span id="invalidlname" style="display: none; font-size: 13px; color: #D10024">Invalid Name</span>
+                            </div>
+                            <div class="form-group">
+                                <input id="telephone2" autocomplete="off" class="input" type="tel" placeholder="Telephone">
+                                <span id="validphone21" style="display: none; font-size: 13px; color: #D10024">Required field</span>
+                                <span id="validphone22" style="display: none; font-size: 13px; color: #D10024">This phone is already Exist !!</span>
+                                <span id="validphone23" style="display: none; font-size: 13px; color: #D10024">You must write only numbers</span>
+                                <span id="validphone24" style="display: none; font-size: 13px; color: #D10024">Phone must be 11 numbers</span>
+                            </div>
+                            <div class="form-group">
+                                <input id="password2" autocomplete="off" class="input" type="password" placeholder="Password">
+                                <span id="validpassword21" style="display: none; font-size: 13px; color: #D10024">Required field</span>
+                                <span id="invalidpassword" style="display: none; font-size: 13px; color: #D10024">Invalid Password</span>
+                            </div>
+                            <div class="form-group">
+                                <input id="password3" autocomplete="off" class="input" type="password" placeholder="Confirm Password">
+                                <span id="validpassword22" style="display: none; font-size: 13px; color: #D10024">Required field</span>
+                                <span id="validpassword23" style="display: none; font-size: 13px; color: #D10024">Passwords must be matched</span>
+                            </div>
+                        </div>
+                        <button id="btnRegist" class="primary-btn btn-block order-submit">Register &nbsp; <i class="fa fa-user"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

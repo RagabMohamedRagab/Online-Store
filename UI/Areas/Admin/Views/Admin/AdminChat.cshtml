@@ -1,0 +1,724 @@
+﻿@{
+    ViewBag.Title = "Chats";
+    var AdminID = ViewBag.adminId;
+    var AdminName = ViewBag.adminName;
+}
+
+<style>
+    body {
+        background-color: #f4f7f6;
+        margin-top: 20px;
+    }
+
+    .card {
+        background: #fff;
+        transition: .5s;
+        border: 0;
+        margin-bottom: 30px;
+        border-radius: .55rem;
+        position: relative;
+        width: 100%;
+        box-shadow: 0 1px 2px 0 rgb(0 0 0 / 10%);
+    }
+
+    .chat-app .people-list {
+        width: 280px;
+        position: absolute;
+        left: 0;
+        top: 0;
+        padding: 20px;
+        z-index: 7
+    }
+
+    .chat-app .chat {
+        margin-left: 280px;
+        border-left: 1px solid #eaeaea
+    }
+
+    .people-list {
+        -moz-transition: .5s;
+        -o-transition: .5s;
+        -webkit-transition: .5s;
+        transition: .5s
+    }
+
+        .people-list .chat-list li {
+            padding: 10px 15px;
+            list-style: none;
+            border-radius: 3px
+        }
+
+            .people-list .chat-list li:hover {
+                background: #efefef;
+                cursor: pointer
+            }
+
+            .people-list .chat-list li.active {
+                background: #efefef
+            }
+
+            .people-list .chat-list li .name {
+                font-size: 15px
+            }
+
+        .people-list .chat-list img {
+            width: 45px;
+            border-radius: 50%
+        }
+
+        .people-list img {
+            float: left;
+            border-radius: 50%
+        }
+
+        .people-list .about {
+            float: left;
+            padding-left: 8px
+        }
+
+        .people-list .status {
+            color: #999;
+            font-size: 13px
+        }
+
+    .chat .chat-header {
+        padding: 15px 20px;
+        border-bottom: 2px solid #f4f7f6
+    }
+
+        .chat .chat-header img {
+            float: left;
+            border-radius: 40px;
+            width: 40px
+        }
+
+        .chat .chat-header .chat-about {
+            float: left;
+            padding-left: 10px
+        }
+
+    .chat .chat-history {
+        padding-left: 20px;
+        padding-right: 20px;
+        border-bottom: 2px solid #f4f7f6
+    }
+
+        .chat .chat-history ul {
+            padding: 0
+        }
+
+            .chat .chat-history ul li {
+                list-style: none;
+                margin-bottom: 30px
+            }
+
+
+        .chat .chat-history .message-data {
+            margin-bottom: 15px
+        }
+
+            .chat .chat-history .message-data img {
+                border-radius: 40px;
+                width: 40px
+            }
+
+        .chat .chat-history .message-data-time {
+            color: #434651;
+            padding-left: 6px
+        }
+
+        .chat .chat-history .message {
+            color: #444;
+            padding-top: 18px;
+            padding-left: 20px;
+            padding-right: 20px;
+            line-height: 26px;
+            font-size: 16px;
+            border-radius: 7px;
+            display: inline-block;
+            position: relative
+        }
+
+
+
+        .chat .chat-history .my-message {
+            background: #efefef
+        }
+
+
+
+        .chat .chat-history .other-message {
+            background: #e8f1f3;
+            text-align: left;
+        }
+
+
+
+    .chat .chat-message {
+        padding: 20px
+    }
+
+    .online,
+    .offline,
+    .me {
+        margin-right: 2px;
+        font-size: 8px;
+        vertical-align: middle
+    }
+
+    .online {
+        color: #86c541
+    }
+
+    .notseen {
+        color: #007bff;
+        float: right;
+    }
+
+    .offline {
+        color: #e47297
+    }
+
+    .me {
+        color: #1d8ecd
+    }
+
+    .float-right {
+        float: right
+    }
+
+
+
+    .text-truncate {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .gfg {
+        margin: 4px, 4px;
+        padding: 4px;
+        height: 59vh;
+        overflow-x: hidden;
+        overflow-y: auto;
+        text-align: justify;
+        margin-right: -11px;
+    }
+
+    .circle {
+        position: absolute;
+        left: -4px;
+        bottom: 21px;
+        width: 20px;
+        height: 20px;
+        line-height: 20px;
+        text-align: center;
+        border-radius: 50%;
+        font-size: 10px;
+        color: #FFF;
+        background-color: #007bff;
+    }
+
+    .dateShape {
+        color: #999;
+        font-size: 13px;
+    }
+
+    .text-block {
+        min-width: 52px;
+        max-width: 52px;
+        color: black;
+        padding: 12px;
+        border-radius: 100%;
+        font-size: 16px;
+        text-align: center;
+        font-size: 15px;
+    }
+    .spancheck {
+        left: 10px;
+        position: relative;
+        color: #787d83;
+    }
+</style>
+<input id="hiddenInput" hidden /> @*بحط فيه الأيدي لما اضغط على الشات*@
+<input id="hiddenInputnotseen" hidden /> @*بحط فيه الأيدي اللي جاي من الريسيف*@
+<div class="container">
+    <div class="row clearfix" style=" display: flex; justify-content: center;">
+        <div style="position: unset; width:97%">
+            <div class="card chat-app">
+                <div id="plist" class="people-list">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fa fa-search"></i></span>
+                        </div>
+                        <input type="text" class="form-control" id="txtsearch" autocomplete="off" placeholder="Search...">
+                    </div>
+                    <ul id="userinfo" class="list-unstyled chat-list mt-2 mb-0">
+                    </ul>
+                    <ul id="userinfo2" class="list-unstyled chat-list mt-2 mb-0" style="display:none;">
+                    </ul>
+                </div>
+                <div id="nomessages" class="chat row" style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 28pc; text-align: center ">
+                    <img src="~/ElaAdmin-master/ElaAdmin-master/images/messages3.jpg" />
+                    <h4>Select a chat to display messages</h4>
+                </div>
+                <div id="messagearea" style="display:none" class="chat">
+                    <div id="messageList">
+                        <div class="chat-header clearfix">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="chat-about">
+                                        <h6 class="m-b-0" id="username"></h6>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="chat-history" style="position: relative;">
+                            <ul id="newMessage" style="margin-bottom: 0rem;" class="m-b-0 gfg">
+                            </ul>
+                            <span onclick="GoBottom()" style="display: none;cursor:pointer; bottom: -1px; position: absolute;" id="notseenCounterangle"><span id="notseenCounter"></span><i class="fa fa-solid fa-angles-down"></i></span>
+
+                        </div>
+                    </div>
+                    <div class="chat-message clearfix">
+                        <div class="input-group mb-0">
+                            <div id="sendButton" style="pointer-events:none" class="input-group-prepend">
+                                <span class="input-group-text"><i class="fa fa-send"></i></span>
+                            </div>
+                            <input type="text" id="msg" class="form-control" placeholder="Enter text here...">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="~/js/signalr/dist/browser/signalr.js"></script>
+<script src="~/js/jquery.min.js"></script>
+
+<script>
+    "use strict";
+    var connection = new signalR.HubConnectionBuilder().withUrl("/chatHub").build();
+    var adminId=@AdminID;
+    var adminName = "@AdminName";//هستخدمها اني احطها فوق الماسدج
+    var lastAdminName = '';
+    var previousDate = "";
+
+    //عشان الصوره تبقا اول حرفين من الاسم --> في الشاتات شمال + لليوزر في الشات نفسه
+    //const fullName = adminName.split(' ');
+    //const initials = fullName.shift().charAt(0) + fullName.pop().charAt(0);
+    //const initialsUC= initials.toUpperCase();
+
+    $(document).ready(function () {
+        $('#msg').keyup(function () {
+            //لما اكتب ماسدج اولها او اخرها مسافه بيهملها
+            if ($.trim($('#msg').val()) != "") {
+                $("#sendButton").css('pointer-events', '');
+            }
+            else if ($.trim($('#msg').val()) == "") {
+                $("#sendButton").css('pointer-events', 'none');
+            }
+        });
+        $('#txtsearch').keyup(function () {
+            var Search = $('#txtsearch').val();
+            var src = '';
+            if (Search != "") {
+                $.ajax({
+                    url: "/Admin/Admin/Search?src=" + Search,
+                    type: "GET",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (result) {
+                        $("#userinfo").css('display', 'none');
+                        $("#userinfo2").css('display', 'block');
+                        if (result.length == 0) {
+                            src += '<li style="text-align:center;">No Results</li>';
+                        }
+                        else {
+                            $.each(result, function (key, item) {
+
+                                var splitedName = SplitName(item.userName);
+                                var RandomColor = generateRandomColor();
+
+                                src += '<li style="display: flex;" id="li_' + item.userId + '" onclick="OpenChat(' + item.userId + ')" class="clearfix">' +
+                                    '<div style="background-color:' + RandomColor + '" class="text-block">' + splitedName + '</div>';
+
+                                if (item.seen == true) {
+                                    src += '<div class="about" style=" width: 78% "><div class="name" id="n_' + item.userId + '">' + item.userName + '</div>'+
+                                        '<div class="status" style="display: flex;width: 170px;justify-content:space-between"><div style="display: flex;"> <span style="max-width: 102px;" id="' + item.userId + '" class="text-truncate">' + item.messageText + '</span>' +
+                                        '<span id="t_' + item.userId + '">.' + item.time + '</span></div><span id="i_' + item.userId + '"></span></div></li>';
+                                }
+                                else {
+                                    //bold
+                                    src += '<div class="about" style=" width: 78% "><div style="font-weight: bold; color: #212529 "class="name" id="n_' + item.userId + '">' + item.userName + '</div>' +
+                                        '<div class="status" style="display: flex;width: 170px;justify-content:space-between"><div style="display: flex;"> <span style="font-weight: bold; color: #212529;max-width: 102px; " id="' + item.userId + '" class="text-truncate">' + item.messageText + '</span>' +
+                                        '<span style="font-weight: bold; color: #212529 " id="t_' + item.userId + '">.' + item.time + '</span></div><span id="i_' + item.userId + '"><i class="fa fa-circle notseen" ></i></span></div></li>';
+                                }
+
+                            });
+
+                        }
+                        $("#userinfo2").html(src);
+                    }
+                });
+            }
+            else {
+                $("#userinfo").css('display', 'block');
+                $("#userinfo2").css('display', 'none');
+            }
+
+        });
+        $.ajax({
+            type: "GET",
+            url: "/Admin/Admin/GetChats",
+            dataType: "json",
+            success: function (result) {
+                var html = '';
+                $.each(result, function (key, item) {
+                    var splitedName = SplitName(item.userName);
+                    var RandomColor = generateRandomColor();
+                    if (item.seen == true) {
+                        // سواء ماسدج بتاعتي كأدمن او بتاعت اليوزر ومعمولها سين من اي حد فينا
+                        html += '<li style="display: flex;" id="li_' + item.userId + '" onclick="OpenChat(' + item.userId + ')" class="clearfix"><div style="background-color:' + RandomColor + '" class="text-block">' + splitedName + '</div><div class="about" style=" width: 78% ">';
+                        html += '<div class="name" id="n_' + item.userId + '">' + item.userName + '</div><div class="status" style="display: flex; width: 161px;justify-content:space-between">';
+                        html += '<div style="display: flex;"><span id="' + item.userId + '" style="max-width: 102px;" class="text-truncate"> ' + item.messageText + ' </span>';
+                        html += '<span id="t_' + item.userId + '">.' + item.time + '</span></div><span id="i_' + item.userId + '"></span></div>';
+                    }
+                    else if (item.seen == false && item.adminOrNot == false) {
+                        //ماسدج من اليوزر ومش معمولها سين من الادمن
+                        html += '<li style="display: flex;" id="li_' + item.userId + '" onclick="OpenChat(' + item.userId + ')" class="clearfix"><div style="background-color:' + RandomColor + '" class="text-block">' + splitedName + '</div><div class="about" style=" width: 78% ">';
+                        html += '<div style="font-weight: bold; color: #212529 " class="name" id="n_' + item.userId + '">' + item.userName + '</div><div class="status" style="display: flex; width: 161px; justify-content: space-between">';
+                        html += '<div style="display: flex;"><span style="font-weight: bold; color: #212529; max-width: 102px; " id="' + item.userId + '" class="text-truncate"> ' + item.messageText + ' </span>';
+                        html += '<span style="font-weight: bold; color: #212529" id="t_' + item.userId + '">.' + item.time + '</span></div>';
+                        html += '<span id="i_' + item.userId + '"><i class="fa fa-circle notseen"></i></span></div>';
+                    }
+                    else if (item.seen == false) {
+                        //ماسدج بتاعتي كأدمن ومش معمولها سين من اليوزر
+                        html += '<li style="display: flex;" id="li_' + item.userId + '" onclick="OpenChat(' + item.userId + ')" class="clearfix"><div style="background-color:' + RandomColor + '" class="text-block">' + splitedName + '</div><div class="about" style=" width: 78% ">';
+                        html += '<div class="name" id="n_' + item.userId + '">' + item.userName + '</div><div class="status" style="display: flex; width: 161px;justify-content:space-between">';
+                        html += '<div style="display: flex;"><span id="' + item.userId + '" style="max-width: 102px;" class="text-truncate"> ' + item.messageText + ' </span>';
+                        html += '<span id="t_' + item.userId + '">.' + item.time + '</span></div><span id="i_' + item.userId + '"></span></div>';
+                    }
+                    html += '</div></li>';
+
+                });
+                $("#userinfo").html(html);
+            }
+        });
+    });
+
+
+
+    var MsgCounter = 0;
+    var y = 0;
+    var m = 0;
+
+    connection.on("ReceiveMessage", function (message, txt, senderid, userid, dictionaryDandT) {
+        var newchat = '';
+        if (userid == 0) {
+            //عشان لو حد بعتلي او انا بعت هلاقي الشات في الشمال طلع لفوق --> لو اليوزر اللي باعت
+            //alert(dictionaryDandT["Exist"]);
+
+            if (dictionaryDandT["Exist"] == "notexist") {
+
+                var splitedName = SplitName(dictionaryDandT["Name"]);
+                var RandomColor = generateRandomColor();
+
+                newchat += '<li style="display: flex;" id="li_' + senderid + '" onclick="OpenChat(' + senderid + ')" class="clearfix">' +
+                    '<div style="background-color:' + RandomColor + '" class="text-block">' + splitedName  + '</div>'+
+                    '<div class="about" style=" width: 78% "><div class="name" id="n_' + senderid + '">' + dictionaryDandT["Name"] + '</div>' +
+                    '<div class="status" style="display: flex;width: 161px;justify-content:space-between"><div style="display: flex;"> <span style="max-width: 102px;" id="' + senderid + '" class="text-truncate">' + message + '</span>' +
+                    '<span id="t_' + senderid + '">.' + dictionaryDandT["Time"] + '</span></div><span id="i_' + senderid + '"><i class="fa fa-circle notseen" ></i></span></div></li>';
+
+                $("#userinfo").append(newchat);
+                $("#li_" + senderid).prependTo("#userinfo");
+            }
+            else {
+                $("#li_" + senderid).prependTo("#userinfo");
+            }
+            $("#hiddenInputnotseen").val(senderid);
+
+        }
+        else {
+             //عشان لو حد بعتلي او انا بعت هلاقي الشات في الشمال طلع لفوق --> لو الادمن اللي باعت
+            $("#li_" + userid).prependTo("#userinfo");
+        }
+        var userId = parseInt(document.getElementById("hiddenInput").value);
+        //var msg = message.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");  بيحول الرموز لحجات تانيه
+        if (senderid == userId || userid == userId) {
+            //ابقا فاتحه الشات اللي بيجيله الرساله
+            if (dictionaryDandT["Date"] != previousDate) {
+                // مقارنه للتاريخ الجاي والتاريخ اللي قبله عشان الماسدجات تبقا كلها متجمعه تحت تاريخ واحد
+                html += '<li class="dateShape" style="text-align:center">' + dictionaryDandT["Date"] + '</li>';
+                previousDate = dictionaryDandT["Date"];
+            }
+            if (txt == "My text as admin") {
+                //لو الادمن اللي باعت الرساله
+                var html = '';
+                html += '<li class="clearfix" style="margin-right: 10%;">';
+                if (lastAdminName != adminName) {
+                    html += '<div class="message-data" > Admin: ' + adminName + '</div>';
+                    lastAdminName = adminName;
+                    html += '<div class="message my-message">';
+                }
+                else {
+                    html += '<div class="message my-message " style="position: unset; word-break: break-word;">';
+                }
+                html +=message;
+                html += '</br><span style="font-size: xx-small;" >';
+                html += dictionaryDandT["Time"];
+                html += '</span><span class="spancheck"><i class="fa fa-light fa-check"></i></span></div></li>';
+
+                $("#newMessage").append(html);
+                document.getElementById("newMessage").scrollTop = document.getElementById("newMessage").scrollHeight;
+                $("#" + userId).text(message);
+                $("#t_" + userId).text('.'+dictionaryDandT["Time"]);
+
+            }
+            else {
+                //لو اليوزر اللي باعت الرساله
+                var html = '';
+                html += '<li class="clearfix" style="margin-right: 19px;margin-left: 10%;">';
+                html += '<div class="message other-message float-right" style="word-break: break-word;">';
+                html += message;
+                html += '</br><span style="font-size: xx-small;" >';
+                html += dictionaryDandT["Time"];
+                html += '</span></div></li>';
+
+                var x = document.getElementById("newMessage").scrollHeight - (document.getElementById("newMessage").clientHeight + document.getElementById("newMessage").scrollTop);
+                //الجزء المتبقي من اخر مانا واقفه لتحت قبل ما الماسدج الجديده تتحط
+                m = document.getElementById("newMessage").clientHeight + document.getElementById("newMessage").scrollTop;
+                //الجزء من اخر مانا واقفه لحد فوق خالص
+                $("#newMessage").append(html);
+                $("#hiddenInputnotseen").val(senderid);
+
+                $("#" + senderid).text(message).css('font-weight', 'bold').css('color', '#212529');
+                $("#t_" + senderid).text('.'+dictionaryDandT["Time"]).css('font-weight', 'bold').css('color', '#212529');
+                $("#n_" + senderid).css('font-weight', 'bold').css('color', '#212529');
+                $("#i_" + senderid).html('<i class="fa fa-circle notseen"></i>');
+                if (document.getElementById("newMessage").scrollHeight == document.getElementById("newMessage").clientHeight) {
+                    $("#" + senderid).css('font-weight', '').css('color', '');
+                    $("#t_" + senderid).css('font-weight', '').css('color', '');
+                    $("#n_" + senderid).css('font-weight', '').css('color', '');
+                    $("#i_" + senderid).html('');
+                }
+                if (x != 0) {
+                    //لو مش واقفه في اخر الماسدجات و اليوزر بعت ماسدج جديده عوزاه يعملي نوتفكيشن انه في ماسدج جديده تحت ومينزلش عليها
+                    MsgCounter++;
+                    y += document.getElementById("newMessage").scrollHeight - (x+m);
+                    //جزء الماسدجات اللي معملتلهاش سين
+                    var userID = parseInt(document.getElementById("hiddenInputnotseen").value);
+
+                    //not seen counter in chat
+                    var html2 = '<i class="circle">' + MsgCounter + '</i>';
+                    $("#notseenCounter").html(html2);
+                    $("#notseenCounterangle").css('display','inline');
+                }
+                else {
+                    //لو واقفه في اخر الماسدجات و اليوزر بعت ماسدج جديده عوزاه يفضل ف اخر الماسدجات وينزل مع الجديده اللي بتيجي
+                    document.getElementById("newMessage").scrollTop = document.getElementById("newMessage").scrollHeight;
+                    y = 0;
+                    MsgCounter = 0;
+                //    Seen(senderid);
+                }
+            }
+        }
+        else if (senderid != userId && txt == "My text as user") {
+            //مش فاتحه الشات اللي بيجيله الرساله + اليوزر اللي بيبعت بس
+
+            $("#" + senderid).text(message).css('font-weight', 'bold').css('color', '#212529');
+            $("#t_" + senderid).text('.'+dictionaryDandT["Time"]).css('font-weight', 'bold').css('color', '#212529');
+            $("#n_" + senderid).css('font-weight', 'bold').css('color', '#212529');
+            $("#i_" + senderid).html('<i class="fa fa-circle notseen" ></i>');
+
+            $("#hiddenInputnotseen").val(senderid);
+
+        }
+
+
+    });
+
+
+    $("#newMessage").scroll(function () {
+        var winBottom = document.getElementById("newMessage").scrollTop + document.getElementById("newMessage").clientHeight;
+
+        if ((winBottom <= (document.getElementById("newMessage").scrollHeight - y)) && (y != 0)) {
+            //message not seen
+            //not seen in chats list
+            var userID = parseInt(document.getElementById("hiddenInputnotseen").value);
+            $("#" + userID).css('font-weight', 'bold').css('color', '#212529');
+            //$("#t_" + senderid).text(time).css('font-weight', 'bold').css('color', '#212529');
+            $("#t_" + userID).css('font-weight', 'bold').css('color', '#212529'); ///////////////////////////////////كانت موجوده ومش عارفين بايظه وللا ايه
+            $("#i_" + userID).html('<i class="fa fa-circle notseen" ></i>');
+            $("#n_" + userID).css('font-weight', 'bold').css('color', '#212529');
+
+            //not seen counter in chat
+            var html2 = '<i class="circle">' + MsgCounter + '</i>';
+            $("#notseenCounter").html(html2);
+            $("#notseenCounterangle").css('display', 'inline');
+
+
+        }
+        else if ((winBottom > (document.getElementById("newMessage").scrollHeight - y)) || MsgCounter == 0 ) {
+            //message seen
+            y = 0;
+            MsgCounter = 0;
+            //toastr.success('seen.', '', { timeOut: 7000 });
+            var userID = parseInt(document.getElementById("hiddenInputnotseen").value);//ماسدج لسه جايه ف الريسيف
+            var userID2 = $("#hiddenInput").val();       //لما ابقا ف شات تاني و جاي رساله جديده واضغط على الشات عشان اعمل سين واليوزر أيدي اللي فوقها مش هيبقا فيها داتا (اليوزر اللي لسه باعت)عشان بحط فيها في اول إف  في الريسيف//   الشات المفتوح
+            $("#notseenCounterangle").css('display', 'none');
+            if (userID == userID2) {
+                //لو انا في الشات اللي جايله رساله
+                //ميعملش سين لرساله في شات وشات تاني مفتوح
+                $("#" + userID).css('font-weight', '').css('color', '');
+                $("#t_" + userID).css('font-weight', '').css('color', '');
+                $("#n_" + userID).css('font-weight', '').css('color', '');
+                $("#i_" + userID).html('');
+                Seen(userID);
+
+            }
+            else {
+                //لو مبعوت رساله لشات انا مش فيه يعمل سين للشات اللي انا فيه
+                $("#i_" + userID2).html('');
+                $("#" + userID2).css('font-weight', '').css('color', '');
+                $("#t_" + userID2).css('font-weight', '').css('color', '');
+                $("#n_" + userID2).css('font-weight', '').css('color', '');
+                Seen(userID2);
+            }
+
+        }
+        });
+
+    connection.start().then(function () {
+        document.getElementById("sendButton").disabled = false;
+    }).catch(function (arr) {
+        return console.error(arr.toString());
+    });
+
+    document.getElementById("sendButton").addEventListener("click", function (event) {
+        var message = $.trim(document.getElementById("msg").value);
+        var userId = parseInt(document.getElementById("hiddenInput").value);
+        var to = "";
+        if (message == "") {
+            $("#sendButton").css('pointer-events', 'none');
+        }
+        else {
+            connection.invoke("SendMessage", adminId, message, to, userId).then(function () {
+                document.getElementById("msg").value = "";
+            }).catch(function (arr) {
+                return console.error(arr.toString());
+            });
+            event.preventDefault();
+        }
+
+    });
+
+    function OpenChat(userid) {
+        var previousDateOpenChat = "";
+        $('#txtsearch').val("");
+        lastAdminName = '';
+        //السيرش لو مسحت اللي فيه يجبلي الداتا كلها
+        $("#userinfo").css('display', 'block');
+        $("#userinfo2").css('display', 'none');
+        var html = '';
+        var name = '';
+        var txt = '';
+        $("#messagearea").css('display', 'block');
+        $("#nomessages").css('display', 'none');
+        $("#hiddenInput").val(userid);
+        Seen(userid);
+        $("#" + userid).css('font-weight', '').css('color', '');
+        $("#t_" + userid).css('font-weight', '').css('color', '');
+        $("#n_" + userid).css('font-weight', '').css('color', '');
+        $("#i_" + userid).html('');
+
+        $.ajax({
+            type: "GET",
+            url: "/Admin/Admin/GetMessages?userid="+userid,
+            dataType: "json",
+            success: function (result) {
+                $.each(result, function (key, item) {
+                    //اخر تاريخ جاي في البريفياس حطيته في فاريابل
+                    //  مقارنه بين التاريخ اللي في الايتم و اللي في الفاريبل
+                    if (item.date != previousDateOpenChat) {
+                        html += '<li class="dateShape" style="text-align:center">' + item.date + '</li>';
+                        previousDateOpenChat = item.date;
+                    }
+                    if (item.adminOrNot == true) {
+                        if (lastAdminName != item.adminName) {
+                            html += '<li class="clearfix" style="margin-right: 10%;">';
+                            html += '<div class="message-data" > Admin: ' + item.adminName + '</div>';
+                            lastAdminName = item.adminName;
+                            html += '<div class="message my-message" style="word-break: break-word;">';
+                        }
+                        else {
+
+                            html += '<li class="clearfix" style="margin-right: 10%;">';
+                            html += '<div style="position: unset;" class="message my-message" style="word-break: break-word;">';
+                        }
+                        html += item.messageText;
+                        txt = item.messageText;
+                        html += '</br><span style="font-size: xx-small;" >';
+                        html += item.time;
+                        html +='</span><span class="spancheck"><i class="fa fa-light fa-check"></i></span></div></li>';
+                    }
+                    else {
+                        name = item.userName;
+                        html += '<li class="clearfix" style="margin-right: 19px;margin-left: 10%;">';
+                        html += '<div class="message other-message float-right" style="word-break: break-word;">';
+                        html += item.messageText;
+                        txt = item.messageText;
+                        html += '</br><span style="font-size: xx-small;" >';
+                        html += item.time;
+                        html += '</span></div></li>';
+                    }
+                });
+                previousDate = previousDateOpenChat;
+
+                $("#username").html(name);
+
+                $("#newMessage").html(html);
+                //عشان الصفحه تفتح على اخر ماسدجات تحت اول ما افتح الشات
+                document.getElementById("newMessage").scrollTop = document.getElementById("newMessage").scrollHeight;
+                if (document.getElementById("newMessage").scrollHeight == document.getElementById("newMessage").clientHeight) {
+                    $("#" + userid).css('font-weight', '').css('color', '');
+                    $("#t_" + userid).css('font-weight', '').css('color', '');
+                    $("#n_" + userid).css('font-weight', '').css('color', '');
+                    $("#i_" + userid).html('');
+                }
+            }
+        });
+    }
+    function GoBottom() {
+        document.getElementById("newMessage").scrollTop = document.getElementById("newMessage").scrollHeight;
+    }
+    function Seen(uid) {
+        $.ajax({
+            url: "/Admin/Admin/SeeMessages?userid=" + uid ,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (result) {
+                GetMessagesCounter();
+            }
+        });
+    }
+    function generateRandomColor() {
+    //اختار لون عشوائي --> هو اللي بيعمل الالوان و العيب انه ممكن يختار غوامق والحروف متبانش منه
+    //    var letters = '0123456789ABCDEF';
+    //    var color = '#';
+    //    for (var i = 0; i < 6; i++) {
+    //        color += letters[Math.floor(Math.random() * 16)];
+    //    }
+    //    return color;
+
+        //هيختار عشوائي من ألوان متحدده في ليست
+        var colors = ['#9b4f6c', '#C9014D', '#ffb2cf', '#f9005e', '#979797', '#e30d0d', '#ff5200', '#f58550', '#b36e4d', '#ffb100', '#cd8e00', '#ffda87', '#bdd537', '#73bf5a', '#74ebaf', '#45956d', '#04a956', '#04a9a1', '#7ad1cd', '#b1ebe8', '#528eb9', '#c3abfd', '#e5a6b7']
+        return colors[Math.floor(Math.random() * colors.length)];
+    }
+    function SplitName(username) {
+        const fullName = username.split(' ');
+        const initials = fullName.shift().charAt(0) + fullName.pop().charAt(0);
+        return initials.toUpperCase();
+    }
+</script>

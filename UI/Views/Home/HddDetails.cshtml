@@ -1,0 +1,1015 @@
+﻿@model BLL.ViewModel.HddVM
+@using Microsoft.AspNetCore.Http
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+
+@{ var Hdds = ViewBag.Hdd;
+
+    var Rate = Decimal.Round(Model.Hddrate, 1);
+    var rate5 = 0;
+    var rate4 = 0;
+    var rate3 = 0;
+    var rate2 = 0;
+    var rate1 = 0;
+    if (Model.RateCount.Where(x => x.Rate != 0).Sum(x => x.Count) != 0)
+    {
+        rate5 = (Model.RateCount.Where(x => x.Rate == 5).Select(x => x.Count).FirstOrDefault()) * 100 / Model.RateCount.Where(x => x.Rate != 0).Sum(x => x.Count);
+        rate4 = (Model.RateCount.Where(x => x.Rate == 4).Select(x => x.Count).FirstOrDefault()) * 100 / Model.RateCount.Where(x => x.Rate != 0).Sum(x => x.Count);
+        rate3 = (Model.RateCount.Where(x => x.Rate == 3).Select(x => x.Count).FirstOrDefault()) * 100 / Model.RateCount.Where(x => x.Rate != 0).Sum(x => x.Count);
+        rate2 = (Model.RateCount.Where(x => x.Rate == 2).Select(x => x.Count).FirstOrDefault()) * 100 / Model.RateCount.Where(x => x.Rate != 0).Sum(x => x.Count);
+        rate1 = (Model.RateCount.Where(x => x.Rate == 1).Select(x => x.Count).FirstOrDefault()) * 100 / Model.RateCount.Where(x => x.Rate != 0).Sum(x => x.Count);
+    }
+
+}
+<head>
+    @*<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">*@
+    <style>
+        .sidebar {
+            height: 35px;
+            width: 54px;
+            background-color: #fff0;
+            border-radius: 5px;
+            position: absolute;
+            top: 82%;
+            left: 174px;
+            transform: translateX(-50px);
+            margin-top: 5px;
+        }
+
+        .icon-box {
+            width: 34px;
+            height: 24px;
+            display: flex;
+            justify-content: flex-start;
+            margin: 5px auto;
+        }
+
+        .side-text {
+            min-width: 0px;
+            background: #FFF;
+            margin-right: 5px;
+            line-height: 13px;
+            color: #D10024;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 5px;
+            overflow: hidden;
+            transition: 0.5s;
+            text-align: center;
+        }
+
+        .errorIcon {
+            min-width: 30px;
+            height: 100%;
+            border-radius: 30px;
+            cursor: pointer;
+            writing-mode: vertical-lr;
+        }
+
+            .errorIcon .fa {
+                font-size: 16px;
+                color: #D10024;
+                line-height: 50px;
+            }
+
+
+        .icon-box:hover .side-text {
+            min-width: 140px;
+        }
+
+        /*------------------------Login & Register Popup---------------------------*/
+
+        /*Trigger Button*/
+        .login-trigger {
+            font-weight: bold;
+            color: #fff;
+            background: linear-gradient(to bottom right, #B05574, #F87E7B);
+            padding: 15px 30px;
+            border-radius: 30px;
+            position: relative;
+            top: 50%;
+        }
+
+        .modal-dialog {
+            width: 75%;
+            margin: 30px auto;
+        }
+        /*Modal*/
+        h4 {
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .close {
+            color: black;
+            transform: scale(1.2)
+        }
+
+        .modal-content {
+            font-weight: bold;
+            background: linear-gradient(to bottom left,#b50b07,#000000);
+        }
+
+        .form-control {
+            margin: 1em 0;
+        }
+
+            .form-control:hover, .form-control:focus {
+                box-shadow: none;
+                border-color: #fff;
+            }
+
+        .username, .password {
+            border: none;
+            border-radius: 0;
+            box-shadow: none;
+            border-bottom: 2px solid #eee;
+            padding-left: 0;
+            font-weight: normal;
+            background: transparent;
+        }
+
+        .form-control::-webkit-input-placeholder {
+            color: #eee;
+        }
+
+        .form-control:focus::-webkit-input-placeholder {
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .login {
+            padding: 6px 20px;
+            border-radius: 20px;
+            background: none;
+            border: 2px solid #FAB87F;
+            color: #FAB87F;
+            font-weight: bold;
+            transition: all .5s;
+            margin-top: 1em;
+        }
+
+            .login:hover {
+                background: #FAB87F;
+                color: #fff;
+            }
+
+
+        /*-------------------------------(wishlist icon)----------------------------------*/
+        .icon-wrap {
+            /* don't take the whole line */
+            display: inline-block;
+            /* transition the background change */
+            transition: background-color 0.25s;
+            /* height of the icon */
+            height: 2em;
+            /* width of the icon */
+            width: 2em;
+            /* space between the icon and the background edge */
+            padding: 0.25em;
+            /* make it rounded */
+            border-radius: 50%;
+        }
+
+
+            /* styles for the icon wrap when hovered */
+
+            .icon-wrap:hover {
+                /* add a background on hover */
+                background-color: rgba(0, 0, 0, .15);
+                /* pointer cursor on hover */
+                cursor: pointer;
+            }
+    </style>
+</head>
+
+<body>
+    <br />
+    <br />
+    <br />
+
+    <!-- SECTION -->
+    <div class="section">
+        <!-- container -->
+        <div class="container">
+            <!-- row -->
+            <div class="row">
+                <!-- Product main img -->
+                <div class="col-md-5 col-md-push-2">
+                    <div id="product-main-img">
+                        @foreach (var item in Model.Image)
+                        {
+                            <div class="product-preview">
+                                <img src="~/Images/@item" alt="">
+                            </div>
+                        }
+                    </div>
+
+                </div>
+                <!-- /Product main img -->
+                <!-- Product thumb imgs -->
+                <div class="col-md-2  col-md-pull-5">
+                    <div id="product-imgs" style="top: 72px;">
+                        @foreach (var item in Model.Image)
+                        {
+                            <div class="product-preview">
+                                <img src="~/Images/@item" alt="">
+                            </div>
+                        }
+                    </div>
+                </div>
+                <!-- /Product thumb imgs -->
+                <!-- Product details -->
+                <br /><br /><br />
+
+                <!---------------------------(start)--------------------Login & Register Popup--------------------------------------------->
+
+                <a hidden id="login-register" href="#" data-target="#LoginRegister" data-toggle="modal">Login Register</a>
+                <div id="LoginRegister" class="modal fade" role="dialog">
+                    <div class="modal-dialog">
+
+                        <div class="modal-content">
+                            <div class="modal-body">
+                                <button id="close" data-dismiss="modal" class="close">&times;</button>
+                                <br />
+                                <div class="col-md-5 order-details" style=" margin-top: 35px;">
+                                    <div class="billing-details">
+                                        <div class="section-title text-center">
+                                            <h3 class="title" style="color: #ffffff;">LogIn</h3>
+                                        </div>
+                                        <div class="caption" id="createAccDiv">
+                                            <div class="form-group">
+                                                <input id="telephone1" autocomplete="off" class="input" type="tel" placeholder="Telephone">
+                                                <span id="validphone11" style="display: none; font-size: 13px; color: #D10024">Please enter your Phone</span>
+                                                <span id="validphone12" style="display: none; font-size: 13px; color: #D10024">This Phone isn’t Exist !!</span>
+                                                <span id="validphone13" style="display: none; font-size: 13px; color: #D10024">You must write only numbers</span>
+                                                <span id="validphone14" style="display: none; font-size: 13px; color: #D10024">Phone must be 11 numbers</span>
+                                            </div>
+                                            <div class="form-group">
+                                                <input id="password1" autocomplete="off" class="input" type="password" placeholder="Password">
+                                                <span id="validpassword11" style="display: none; font-size: 13px; color: #D10024">Please enter your Password</span>
+                                                <span id="validpassword12" style="display: none; font-size: 13px; color: #D10024">Password is Wrong , Try again..</span>
+                                            </div>
+                                        </div>
+                                        <div style="text-align: center;"><button id="btnLogin" class="btn login">LogIn &nbsp; <i class="fa fa-sign-in"></i> </button></div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-offset-7 order-details" style=" margin-top: 35px;">
+                                    <div class="billing-details">
+                                        <div class="section-title text-center">
+                                            <h3 class="title" style="color: #ffffff;">Create Account</h3>
+                                        </div>
+                                        <div class="caption" id="createAccDiv">
+                                            <div class="form-group">
+                                                <input id="fname" autocomplete="off" class="input" type="text" placeholder="First Name">
+                                                <span id="validfname" style="display: none; font-size: 13px; color: #D10024">Required field</span>
+                                                <span id="invalidfname" style="display: none; font-size: 13px; color: #D10024">Invalid Name</span>
+                                            </div>
+                                            <div class="form-group">
+                                                <input id="lname" autocomplete="off" class="input" type="text" placeholder="Last Name">
+                                                <span id="validlname" style="display: none; font-size: 13px; color: #D10024">Required field</span>
+                                                <span id="invalidlname" style="display: none; font-size: 13px; color: #D10024">Invalid Name</span>
+                                            </div>
+                                            <div class="form-group">
+                                                <input id="telephone2" autocomplete="off" class="input" type="tel" placeholder="Telephone">
+                                                <span id="validphone21" style="display: none; font-size: 13px; color: #D10024">Required field</span>
+                                                <span id="validphone22" style="display: none; font-size: 13px; color: #D10024">This phone is already Exist !!</span>
+                                                <span id="validphone23" style="display: none; font-size: 13px; color: #D10024">You must write only numbers</span>
+                                                <span id="validphone24" style="display: none; font-size: 13px; color: #D10024">Phone must be 11 numbers</span>
+                                            </div>
+                                            <div class="form-group">
+                                                <input id="password2" autocomplete="off" class="input" type="password" placeholder="Password">
+                                                <span id="validpassword21" style="display: none; font-size: 13px; color: #D10024">Required field</span>
+                                                <span id="invalidpassword" style="display: none; font-size: 13px; color: #D10024">Invalid Password</span>
+                                            </div>
+                                            <div class="form-group">
+                                                <input id="password3" autocomplete="off" class="input" type="password" placeholder="Confirm Password">
+                                                <span id="validpassword22" style="display: none; font-size: 13px; color: #D10024">Required field</span>
+                                                <span id="validpassword23" style="display: none; font-size: 13px; color: #D10024">Passwords must be matched</span>
+                                            </div>
+                                        </div>
+                                        <div style="text-align: center;"><button id="btnRegist" class="btn login">Register &nbsp; <i class="fa fa-user"></i></button></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!----------------------------(end)---------------------Login & Register Popup--------------------------------------------->
+
+                <div class="col-md-5">
+
+                    <div class="product-details">
+                        <div style="display: flex; justify-content: space-between;">
+                            <h2 class="product-name" style=" display: inline-block">@Model.Hddname</h2>
+                            <a class="product-available icon-wrap" style=" text-align: center; display: inline-block; font-size: large; " id="addOrdeleteWL" href="javascript:AddOrDeleteWL('@Model.Hddcode');">
+                                <i style=" margin-top: 7px; " id="@Model.Hddcode" class="fa fa-heart-o"></i>
+                            </a>
+                        </div>
+
+                        <div>
+                            <a id="addYourReview" data-toggle="tab" href="#tab3"><i class="fa fa-comment-o "></i> @Model.Reviews.Count() Review(s) | Add your review</a>
+                        </div>
+                        <div>
+                            <h3 class="product-price">@Model.Hddprice LE</h3>
+                            @if (Model.Hddquantity == 0)
+                            {
+                                <span class="product-available" id="stock">Out Of Stock</span>
+                            }
+                            else
+                            {
+                                <span class="product-available" id="stock" style="color: green">In Stock</span>
+                            }
+
+                        </div>
+                        <br />
+                        @if (Model.Hddquantity == 0)
+                        {
+                            <div class="add-to-cart">
+                                <div class="qty-label">
+                                    Qty
+                                    <div class="input-number">
+                                        <input class="disabled" value="0" type="number">
+                                    </div>
+                                </div>
+                                <button class="add-to-cart-btn disabled" style="background-color:grey" onclick="AddToCart2({ Code: '@Model.Hddcode', Quantity: 1 })"><i class="fa fa-shopping-cart"></i> add to cart</button>
+                                <br /><span hidden style="color: #D10024 "> This quantity is not currently available </span>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="add-to-cart">
+                                <div class="qty-label">
+                                    Qty
+                                    <div class="input-number" id="qty">
+                                        <input id="txtquantity" value="1" type="number">
+                                    </div>
+                                </div>
+                                <button class="add-to-cart-btn" id="btnaddtocart" onclick="AddToCart2({ Code: '@Model.Hddcode', Quantity: 1 })"><i class="fa fa-shopping-cart"></i> add to cart</button>
+                                <br /><span id="InvalidQty" hidden style="color: #D10024 "> This quantity is not currently available </span>
+                            </div>
+                        }
+                        <ul class="product-links">
+                            <li>Brands:</li>
+                            <li><a href="#">@Model.BrandName</a></li>
+                        </ul>
+
+                        <ul class="product-links">
+                            <li>Share:</li>
+                            <li><a id="fbshare" href="" target="_blank"><i class="fa fa-facebook"></i></a></li>
+                            <li><a href="#"><i class="fa fa-twitter"></i></a></li>
+                            <li><a href="#"><i class="fa fa-google-plus"></i></a></li>
+                            <li><a href="#"><i class="fa fa-envelope"></i></a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div id="product-tab">
+                        <ul class="tab-nav">
+                            <li id="DescriptionTab" class="active"><a data-toggle="tab" href="#tab1">Description</a></li>
+                            <li id="ReviewTab1"><a data-toggle="tab" href="#tab3">Reviews (@Model.Reviews.Count())</a></li>
+                        </ul>
+                        <div class="tab-content">
+                            <div id="tab1" class="tab-pane fade in active">
+                                <div class="row">
+                                    <div class="col-md-12" style="text-align:center;">
+                                        The HDD @Model.Hddname is @Model.Hddtype its size is @Model.Hddsize Tera and has @Model.Hddrpm round per minute
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- /tab1  -->
+                            <!-- tab3  -->
+                            <div id="tab3" class="tab-pane fade in">
+                                <div class="row">
+                                    <!-- Rating -->
+                                    <div class="col-md-3">
+                                        <div id="rating">
+                                            <div class="rating-avg">
+                                                <span>@Rate </span>
+                                                <div class="rating-stars">
+                                                    @for (var i = 1; i < Rate; i++)
+                                                    {
+                                                        <i class="fa fa-star" style="color: #D10024"></i>
+                                                    }
+                                                    @for (var i = Rate; i <= 5; i++)
+                                                    {
+                                                        @if (Rate != 0)
+                                                        {
+                                                            @if (Math.Floor((i - Math.Floor(i)) * 10) == 0 && i == Rate)
+                                                            {
+                                                                <i class="fa fa-star" style="color: #D10024"></i>
+                                                            }
+                                                            else if (Math.Floor((i - Math.Floor(i)) * 10) >= 5 && i == Rate)
+                                                            {
+                                                                <i class="fa fa-star-half-o" style="color: #D10024"></i>
+                                                            }
+                                                            else
+                                                            {
+                                                                <i class="fa fa-star-o" style="color: #D10024"></i>
+                                                            }
+                                                        }
+                                                        else
+                                                        {
+                                                            if (i < 5)
+                                                            {
+                                                                <i class="fa fa-star-o" style="color: #D10024"></i>
+                                                            }
+                                                        }
+                                                    }
+                                                </div>
+
+                                            </div>
+                                            <ul class="rating">
+                                                <li>
+                                                    <div class="rating-stars">
+                                                        <i class="fa fa-star" style="color: #D10024"></i>
+                                                        <i class="fa fa-star" style="color: #D10024"></i>
+                                                        <i class="fa fa-star" style="color: #D10024"></i>
+                                                        <i class="fa fa-star" style="color: #D10024"></i>
+                                                        <i class="fa fa-star" style="color: #D10024"></i>
+                                                    </div>
+                                                    <div class="rating-progress">
+                                                        <div style="width: @rate5%"></div>
+                                                    </div>
+                                                    <span class="sum">@Model.RateCount.Where(x => x.Rate == 5).Select(x => x.Count).FirstOrDefault()</span>
+                                                </li>
+
+
+                                                <li>
+                                                    <div class="rating-stars">
+                                                        <i class="fa fa-star" style="color: #D10024"></i>
+                                                        <i class="fa fa-star" style="color: #D10024"></i>
+                                                        <i class="fa fa-star" style="color: #D10024"></i>
+                                                        <i class="fa fa-star" style="color: #D10024"></i>
+                                                        <i class="fa fa-star-o" style="color: #D10024"></i>
+                                                    </div>
+                                                    <div class="rating-progress">
+                                                        <div style="width: @rate4%;"></div>
+                                                    </div>
+                                                    <span class="sum">@Model.RateCount.Where(x => x.Rate == 4).Select(x => x.Count).FirstOrDefault()</span>
+                                                </li>
+                                                <li>
+                                                    <div class="rating-stars">
+                                                        <i class="fa fa-star" style="color: #D10024"></i>
+                                                        <i class="fa fa-star" style="color: #D10024"></i>
+                                                        <i class="fa fa-star" style="color: #D10024"></i>
+                                                        <i class="fa fa-star-o" style="color: #D10024"></i>
+                                                        <i class="fa fa-star-o" style="color: #D10024"></i>
+                                                    </div>
+                                                    <div class="rating-progress">
+                                                        <div style="width: @rate3%;"></div>
+                                                    </div>
+                                                    <span class="sum">@Model.RateCount.Where(x => x.Rate == 3).Select(x => x.Count).FirstOrDefault()</span>
+                                                </li>
+                                                <li>
+                                                    <div class="rating-stars">
+                                                        <i class="fa fa-star" style="color: #D10024"></i>
+                                                        <i class="fa fa-star" style="color: #D10024"></i>
+                                                        <i class="fa fa-star-o" style="color: #D10024"></i>
+                                                        <i class="fa fa-star-o" style="color: #D10024"></i>
+                                                        <i class="fa fa-star-o" style="color: #D10024"></i>
+                                                    </div>
+                                                    <div class="rating-progress">
+                                                        <div style="width: @rate2%;"></div>
+                                                    </div>
+                                                    <span class="sum">@Model.RateCount.Where(x => x.Rate == 2).Select(x => x.Count).FirstOrDefault()</span>
+                                                </li>
+                                                <li>
+                                                    <div class="rating-stars">
+                                                        <i class="fa fa-star" style="color: #D10024"></i>
+                                                        <i class="fa fa-star-o" style="color: #D10024"></i>
+                                                        <i class="fa fa-star-o" style="color: #D10024"></i>
+                                                        <i class="fa fa-star-o" style="color: #D10024"></i>
+                                                        <i class="fa fa-star-o" style="color: #D10024"></i>
+                                                    </div>
+                                                    <div class="rating-progress">
+                                                        <div style="width: @rate1%;"></div>
+                                                    </div>
+                                                    <span class="sum">@Model.RateCount.Where(x => x.Rate == 1).Select(x => x.Count).FirstOrDefault()</span>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <!-- /Rating -->
+                                    <!-- Reviews -->
+                                    <div class="col-md-6">
+                                        <div id="reviews">
+                                            @if (Model.Reviews.Count() != 0)
+                                            {
+                                                <ul id="commentsAfterPagination" class="reviews">
+                                                    @for (var i = 1; i <= Model.Reviews.Count() && i <= 3; i++)
+                                                    {
+                                                        <li id="oldComments">
+                                                            <div class="review-heading">
+                                                                <h5 class="name">@Model.Reviews.Skip(i - 1).Select(x => x.CustomerName).FirstOrDefault()</h5>
+                                                                <p class="date">@Model.Reviews.Skip(i - 1).Select(x => x.DateAndTime).FirstOrDefault()</p>
+
+                                                                <div class="review-rating">
+                                                                    @for (var j = 1; j <= Model.Reviews.Skip(i - 1).Select(x => x.Rate).FirstOrDefault(); j++)
+                                                                    {
+                                                                        <i class="fa fa-star" style="color: #D10024"></i>
+                                                                    }
+                                                                    @for (var j = Model.Reviews.Skip(i - 1).Select(x => x.Rate).FirstOrDefault(); j < 5; j++)
+                                                                    {
+                                                                        <i class="fa fa-star-o empty" style="color: #D10024"></i>}
+                                                                </div>
+
+                                                            </div>
+                                                            <div class="review-body">
+                                                                <p>@Model.Reviews.Skip(i - 1).Select(x => x.Comment).FirstOrDefault()</p>
+                                                            </div>
+                                                        </li>
+                                                    }
+                                                </ul>
+
+                                                <ul class="reviews" id="oldnewreviews">
+                                                </ul>
+                                                <ul class="reviews" id="newreviews">
+                                                </ul>
+                                                <ul id="PaginationNumber" class="reviews-pagination">
+                                                    <li style="margin-right: 5px" id="liPrevious"><a><i class="fa fa-angle-left"></i></a></li>
+                                                    @for (int i = 1; i <= Model.PageCount && i <= 3; i++)
+                                                    {
+                                                        @if (i != Model.CurrentPageIndex)
+                                                        {
+                                                            <li id="@("liActive" + i)"><a href="javascript:PagerClick(@i,'@Model.Hddcode');">@i</a></li>
+                                                        }
+                                                        else
+                                                        {
+                                                            <li class="active">1</li>
+                                                        }
+                                                    }
+                                                    @if (Model.PageCount > 1)
+                                                    {
+                                                        <li id="liNext"><a href="javascript:PagerClick(index=0,'@Model.Hddcode', nextprevious='Next');"><i class="fa fa-angle-right"></i></a></li>
+                                                        <li id="liNext"><a href="javascript:PagerClick(index=@Model.PageCount,'@Model.Hddcode');"><i class="fa fa-angle-double-right"></i></a></li>
+                                                    }
+                                                </ul>
+                                                <input id="nextprevious" type="hidden" />
+                                            }
+                                            else
+                                            {
+                                                <div id="noreviews" style="text-align: center;">
+                                                    <img src="~/img/Index/comments.PNG" />
+                                                    <h3>This Product Has no Reviews</h3>
+                                                    <h5>Add your Review if you want </h5>
+                                                </div>
+                                                <div id="newreviewsafternull" hidden>
+                                                    <ul class="reviews" id="oldnewreviews">
+                                                    </ul>
+                                                    <ul class="reviews" id="newreviews">
+                                                    </ul>
+                                                </div>
+                                            }
+
+                                        </div>
+                                    </div>
+                                    <!-- /Reviews -->
+                                    <!-- Review Form -->
+                                    <div class="col-md-3">
+                                        <div id="review-form">
+                                            <div class="review-form">
+                                                <input class="input" type="text" id="txtcode" value="@Model.Hddcode" placeholder="Your Name" hidden>
+                                                <input class="input" autocomplete="off" type="text" id="txtname" placeholder="Your Name" style="margin-bottom:0px">
+                                                <span id="validname" style="display: none; font-size: 13px; color: #D10024">Name is required</span>
+                                                <span id="invalidname" style="display: none; font-size: 13px; color: #D10024">Invalid Name</span>
+                                                <textarea style="margin-top:15px" autocomplete="off" class="input" id="txtcomment" placeholder="Your Review"></textarea>
+                                                <span id="invalidcomment" style="display: none; font-size: 13px; color: #D10024">Invalid Comment</span>
+                                                <div class="input-rating">
+                                                    <span>Your Rating: </span>
+                                                    <div class="stars">
+                                                        <input id="star5" name="Rate" value="5" type="radio"><label for="star5"></label>
+                                                        <input id="star4" name="Rate" value="4" type="radio"><label for="star4"></label>
+                                                        <input id="star3" name="Rate" value="3" type="radio"><label for="star3"></label>
+                                                        <input id="star2" name="Rate" value="2" type="radio"><label for="star2"></label>
+                                                        <input id="star1" name="Rate" value="1" type="radio"><label for="star1"></label>
+                                                    </div>
+                                                </div>
+                                                <button id="btnaddreview" class="primary-btn">Submit</button>
+                                                <div id="error" class="sidebar" hidden>
+                                                    <div class="icon-box">
+                                                        <div class="errorIcon" style="text-align:center">
+                                                            <i class="fa fa-exclamation-triangle" style="margin-left: -9px;"></i>
+                                                        </div>
+                                                        <div id="errortxt" class="side-text">
+                                                            Add Comment Or Set Rate Or Both
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- /Review Form -->
+                                </div>
+                            </div>
+                            <!-- /tab3  -->
+                        </div>
+                        <!-- /product tab content  -->
+                    </div>
+                </div>
+                <!-- /product tab -->
+            </div>
+            <!-- /row -->
+        </div>
+        <!-- /container -->
+    </div>
+    <!-- /SECTION -->
+    <!-- Section -->
+    @if (Hdds != null)
+    {
+        <div class="section">
+            <!-- container -->
+            <div class="container">
+                <!-- row -->
+                <div class="row">
+
+                    <div class="col-md-12">
+                        <div class="section-title text-center">
+                            <h3 class="title">Related Products</h3>
+                        </div>
+                    </div>
+                    @foreach (var item in Hdds)
+                    {
+                        <div class="col-md-3 col-xs-6">
+                            <div class="product">
+                                <div class="product-img">
+                                    @foreach (var img in item.Image)
+                                    {
+                                        <img src="~/Images/@img" alt="">
+                                    }
+                                    <div class="product-label">
+                                        <span class="sale">-30%</span>
+                                    </div>
+                                </div>
+                                <div class="product-body">
+                                    <h3 class="product-name text-truncate" data-toggle="tooltip" title="@item.Hddname"><a href="#">@item.Hddname</a></h3>
+                                    <h4 class="product-price">@item.Hddprice LE</h4>
+                                    @if (item.Hddquantity == 0)
+                                    {
+                                        <h3 class="product-price" style="font-size: 14px;">Out of Stock </h3>
+                                    }
+                                    else
+                                    {
+                                        <h3 class="product-price" style="font-size: 14px;color:green">In Stock </h3>
+                                    }
+                                    <div class="product-rating">
+                                        @for (var i = 1; i < Decimal.Round(item.Hddrate, 1); i++)
+                                        {
+                                            <i class="fa fa-star" style="color: #D10024"></i>
+                                        }
+                                        @for (var i = Decimal.Round(item.Hddrate, 1); i <= 5; i++)
+                                        {
+                                            @if (Decimal.Round(item.Hddrate, 1) != 0)
+                                            {
+                                                @if (Math.Floor((i - Math.Floor(i)) * 10) == 0 && i == Decimal.Round(item.Hddrate, 1))
+                                                {
+                                                    <i class="fa fa-star" style="color: #D10024"></i>
+                                                }
+                                                else if (Math.Floor((i - Math.Floor(i)) * 10) >= 5 && i == Decimal.Round(item.Hddrate, 1))
+                                                {
+                                                    <i class="fa fa-star-half-o" style="color: #D10024"></i>
+                                                }
+                                                else
+                                                {
+                                                    <i class="fa fa-star-o" style="color: #D10024"></i>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                if (i < 5)
+                                                {
+                                                    <i class="fa fa-star-o" style="color: #D10024"></i>
+                                                }
+                                            }
+                                        }
+                                    </div>
+                                    <div class="product-btns">
+                                        @if (item.WishList == true)
+                                        {
+                                            <button onclick="AddOrDeleteWL('@item.Hddcode')" class="add-to-wishlist"><i id="@item.Hddcode" style="color: #D10024" class="fa fa-heart"></i><span class="tooltipp">Remove from wishlist</span></button>
+                                        }
+                                        else
+                                        {
+                                            <button onclick="AddOrDeleteWL('@item.Hddcode')" class="add-to-wishlist"><i id="@item.Hddcode" class="fa fa-heart-o"></i><span class="tooltipp">add to wishlist</span></button>
+                                        }
+                                        <button onclick="gotoDetails('@item.Hddcode')" class="quick-view"><i class="fa fa-eye"></i><span class="tooltipp">quick view</span></button>
+                                        @if (item.Hddquantity == 0)
+                                        {
+                                            <button style="background: white;cursor:auto" data-toggle="blog-tags" data-placement="top">
+                                                <i class="fa fa-shopping-cart" style="color: #cdcdcd; "></i>
+                                            </button>
+                                        }
+                                        else
+                                        {
+                                            <button onclick="AddToCart2({Code: '@item.Hddcode',Quantity: 1})" data-toggle="blog-tags" data-placement="top" title="Add TO CART">
+                                                <i class="fa fa-shopping-cart"></i><span class="tooltipp">add to Cart</span>
+                                            </button>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    <div class="col-md-12">
+                        <div class="section-title" style="float:right">
+                            <h4 class="title"><a href="/Home/HDD"><strong>show more</strong> <i class="fa fa-hand-o-right" aria-hidden="true"></i></a></h4>
+                        </div>
+                    </div>
+                </div>
+                <!-- /row -->
+            </div>
+            <!-- /container -->
+        </div>
+
+    }
+    <!-- /Section -->
+
+</body>
+<!-- jQuery Plugins -->
+<script src="~/js/jquery.min.js"></script>
+
+
+<script>
+
+    $(document).ready(function () {
+        $('#atag').hover(function () {
+            $(this).css('color', '#aaa');
+        });
+        $('#atag').mouseout(function () {
+            $(this).css('color', '#D10024');
+        });
+
+        $('[data-toggle="tooltip"]').tooltip();
+
+        $('#nextprevious').val(1);
+        $('#liPrevious').hide();
+        //$("#fbshare").attr('href', 'https://www.facebook.com/sharer/sharer.php?u=' + window.location.toString())
+        $("#fbshare").attr('href', 'https://www.facebook.com/sharer/sharer.php?u=https://www.c-sharpcorner.com/UploadFile/cd7c2e/sharing-url-on-facebok-using-Asp-Net/')
+
+        //check if product is added to wishlist or not
+        $.ajax({
+            url: "/Home/CheckWishList?ProductCode=@Model.Hddcode",
+            type: "POST",
+            contentType: "application/json;charset=utf-8",
+            dataType: "json",
+            success: function (result) {
+                if (result == "this product is choosed") {
+                    $('#'+@Model.Hddcode).removeClass('fa fa-heart-o');
+                    $('#'+@Model.Hddcode).addClass('fa fa-heart');
+                }
+            }
+        });
+
+        var html2 = "";
+
+        $('#txtquantity').keyup(function () {
+            if ($('#txtquantity').val() > @Model.Hddquantity) {
+                 $('#InvalidQty').show();
+                 $('#btnaddtocart').css('background-color', 'grey');
+                 $('#btnaddtocart').addClass('disabled');
+            }
+            else {
+                 $('#InvalidQty').hide();
+                 $('#btnaddtocart').removeClass('add-to-cart-btn disabled');
+                 $('#btnaddtocart').addClass('add-to-cart-btn');
+                 $('#btnaddtocart').css('background-color', '');
+
+            }
+        });
+
+        //reviews
+        $('#addYourReview').click(function () {
+            $('#ReviewTab1').addClass('active');
+            $('#ReviewTab2').addClass('active');
+            $('#DescriptionTab').removeClass('active');
+        });
+        $('#txtname').keyup(function () {
+            $('#validname').hide();
+            var Name = $('#txtname').val();
+            if (($.trim(Name) == "" && Name != "") || Name.includes("  ") || /\d/.test(Name)) {
+                $('#invalidname').show();
+                $('#btnaddreview').css('background-color', 'grey').addClass('disabled');
+            }
+            else {
+                $('#invalidname').hide();
+                displaybtnreview();
+            }
+        });
+        $('#txtcomment').click(function () {
+            $('#error').hide();
+            var Comment = $('#txtcomment').val();
+            if ($.trim(Comment) == "" && Comment != "") {
+                $('#invalidcomment').show();
+                $('#btnaddreview').css('background-color', 'grey').addClass('disabled');
+            }
+            else {
+                $('#invalidcomment').hide();
+                displaybtnreview();
+            }
+        });
+        $("input[name='Rate']").click(function () {
+            $('#error').hide();
+            displaybtnreview();
+        });
+        $('#btnaddreview').click(function () {
+            $('#oldnewreviews').html(html2)
+            $('#newreviews').empty();
+            var html="";
+            $('#newreviews').removeClass('animate__backInRight animate__animated');
+
+            var ProductCode = $('#txtcode').val();
+            var CustomerName = $('#txtname').val();
+            var Comment = $('#txtcomment').val();
+            var Rate = $("div.stars > input:radio:checked").val();
+            if (CustomerName == null || CustomerName == "" || (Comment == null || Comment == "") && (Rate == null || Rate == "")) {
+                if (CustomerName == null || CustomerName == "") {
+                    $('#validname').show();
+                    $('#btnaddreview').css('background-color', 'grey').addClass('disabled');
+                }
+                if ((Comment == null || Comment == "") && (Rate == null || Rate == "")) {
+                    $('#error').show();
+                    $('#btnaddreview').css('background-color', 'grey').addClass('disabled');
+                }
+            }
+            else {
+                $.ajax({
+                    url: "/Home/Review?ProductCode=" + ProductCode +
+                        "&CustomerName=" + CustomerName + "&Comment=" + Comment + "&Rate=" + Rate,
+                    type: "POST",
+                    contentType: "application/json;charset=utf-8",
+                    dataType: "json",
+                    success: function (result) {
+                        if (result != null) {
+                            $('#txtname').val("");
+                            $('#txtcomment').val("");
+                            $("div.stars > input:radio:checked").prop("checked",false);
+                            //$('#Rate').val(0);
+                            html += ' <li class="animate__backInRight">';
+                            html += '<div class="review-heading">';
+                            html += '<h5 class="name">' + result.customerName + '</h5>';
+                            html += '<p class="date">' + result.dateAndTime +'</p>';
+                            html +='<div class="review-rating">';
+                            for (var i = 1; i <= result.rate; i++) {
+                                html += '<i class="fa fa-star" style="color: #D10024"></i>';
+                            }
+                            for (var i = result.rate; i < 5; i++) {
+                                html += '<i class="fa fa-star-o empty" style="color: #D10024"></i>';
+                            }
+                            html += '</div >';
+                            html +='</div>';
+                            html +='<div class="review-body">';
+                            html += '<p>' + result.comment+'</p>';
+                            html +='</div>';
+                            html += '</li>';
+                            $('#newreviewsafternull').show();
+                            $('#noreviews').hide();
+                            $('#newreviews').html(html).addClass('animate__backInRight animate__animated');
+                            html2 += html;
+                        }
+                        else {
+                            $('#error').show();
+                            $('#errortxt').text('Something wrong , please try again');
+                        }
+                    }
+                });
+            }
+
+        });
+        //end reviews
+    });
+
+    //related product and product with edit quantity in product details
+    function AddToCart2(Product) {
+        var Q = $('#txtquantity').val();
+        var code = @Model.Hddcode;
+        if (Product.Code != code) {
+            //Add related Products to cart
+            AddToCart(Product);
+        }
+        else if (Product.Code == code && Q > 0) {
+            $('#txtquantity').css("border", "1px solid #E4E7ED");
+            //Add Product with edit quantity
+            Product.Quantity = Q;
+            AddToCart(Product);
+        }
+        else {
+            //Unvaild quantity
+            $('#txtquantity').css("border", "2px solid red");
+        }
+    }
+    //Add Comment
+    function displaybtnreview() {
+        if ($('#validname').is(':hidden') && $('#invalidname').is(':hidden') && $('#error').is(':hidden') && $('#invalidcomment').is(':hidden')) {
+            $('#btnaddreview').removeClass('primary-btn disabled').addClass('primary-btn').css('background-color', '');
+        }
+    }
+
+    function PagerClick(index, code, nextprevious) {
+        if (index == 0) {
+            var number = parseInt($('#nextprevious').val());
+            if ((number - 1) <= 1 && nextprevious =='Previous') {
+                $('#liPrevious').hide();
+            }
+            else if ((number + 1) >= @Model.PageCount && nextprevious == 'Next') {
+                $('#liNext').hide();
+            }
+            if (nextprevious == 'Next') {
+                number = parseInt(number) + 1;
+            }
+            else if (nextprevious == 'Previous') {
+                number = (number - 1);
+            }
+            $('#nextprevious').val(number);
+        }
+        else {
+            $('#nextprevious').val(index);
+            var number = parseInt($('#nextprevious').val());
+        }
+        $('#oldComments').hide();
+        $('#PaginationNumber').empty();
+        $('#liActive' + index + '').addClass('active');
+        $('#liActive' + number + '').addClass('active');
+        $.ajax({
+            url: "/Home/HddDetails?code=" + code +
+                "&currentPageIndex=" + index +
+                "&NextOrPreviousPage=" + number,
+            type: "GET",
+            contentType: "application/json;charset=utf-8",
+            dataType: "json",
+            success: function (result) {
+                var html = '';
+                var html2 = '';
+                if (result != null) {
+                    $.each(result.reviews, function (key, item) {
+                        html += '<li id="oldComments">';
+                        html += '<div class="review-heading">';
+                        html += '<h5 class="name">' + item.customerName + '</h5>';
+                        html += '<p class="date">' + item.dateAndTime + '</p>';
+                        html += '<div class="review-rating">';
+                        for (var i = 1; i <= item.rate; i++) {
+                            html += '<i class="fa fa-star" style="color: #D10024"></i>';
+                        }
+                        for (var i = item.rate; i < 5; i++) {
+                            html += '<i class="fa fa-star-o empty" style="color: #D10024"></i>';
+                        }
+                        html += '</div></div>';
+                        html += '<div class="review-body">';
+                        html += '<p>' + item.comment + '</p>';
+                        html += '</div></li>';
+                    });
+                    //pagination
+                    html2 += '<ul class="reviews-pagination">';
+                    if ((index != 1 && nextprevious == null && index >= 1) || ((nextprevious == 'Next' || nextprevious == 'Previous') && number <= @Model.PageCount && number > 1)) {
+                        //first number in pagination
+                        html2 += '<li style="margin-right: 5px" id="liPrevious"><a href="javascript:PagerClick(index=1,';
+                        html2 += "'@Model.Hddcode');";
+                        html2 += '" > <i class="fa fa-angle-double-left"></i></a ></li >';
+                        //just next number in pagination
+                        html2 += '<li style="margin-right: 5px" id="liPrevious"><a href="javascript:PagerClick(index=0,';
+                        html2 += "'@Model.Hddcode'";
+                        html2 += ', nextprevious=';
+                        html2 += "'Previous');";
+                        html2 += '" > <i class="fa fa-angle-left"></i></a ></li >';
+                    }
+                    for (var i = (number - 1); i <= (number + 1); i++) {
+                        if (i > 0 && i <=@Model.PageCount) {
+                            if (i == index || i == number) {
+                                if (index == 0) {
+                                    html2 += '<li style="margin-right: 5px;" class="active">' + number + '</li>';
+                                }
+                                else {
+                                    html2 += '<li style="margin-right: 5px;" class="active">' + index + '</li>';
+                                }
+                            }
+                            else if (i != index || i != number) {
+                                html2 += '<li style="margin-right: 5px" id="liActive' + i + '"><a href="javascript:PagerClick(' + i + ',';
+                                html2 += "'@Model.Hddcode'";
+                                html2 += ')">' + i + '</a></li>';
+
+                            }
+                        }
+                    }
+                    if ((index != @Model.PageCount && nextprevious == null && index <= @Model.PageCount) || ((nextprevious == 'Next' || nextprevious == 'Previous') && number >= 1 && number < @Model.PageCount)) {
+                        //just previous number in pagination
+                        html2 += '<li id="liNext"><a href="javascript:PagerClick(index=0,';
+                        html2 += "'@Model.Hddcode'";
+                        html2 += ', nextprevious=';
+                        html2 += "'Next');";
+                        html2 += '" > <i class="fa fa-angle-right"></i></a ></li >';
+                        //last number in pagination
+                        html2 += '<li style="margin-right: 5px" id="liPrevious"><a href="javascript:PagerClick(index=@Model.PageCount,';
+                        html2 += "'@Model.Hddcode');";
+                        html2 += '" > <i class="fa fa-angle-double-right"></i></a ></li >';
+                    }
+                    html2 += '</ul>';
+                    $('#commentsAfterPagination').html(html);
+                    $('#PaginationNumber').html(html2);
+                }
+                else {
+                    alert("Wronggg");
+                }
+            }
+        });
+    }
+</script>

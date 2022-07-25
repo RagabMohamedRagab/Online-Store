@@ -1,0 +1,1192 @@
+﻿@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+@*user*@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!--To remove cache -->
+    <meta http-equiv='cache-control' content='no-cache'>
+    <meta http-equiv='expires' content='0'>
+    <meta http-equiv='pragma' content='no-cache'>
+    <!--To remove cache -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--Icon-->
+    <link type="image/x-icon" href="~/img/2022-07-02_1_46_20_AM-removebg-preview.png" rel="icon" />
+    <title>@ViewData["Title"] - WonderHardware</title>
+
+    <!-- Google font -->
+    @*<link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat&family=Poppins&display=swap" rel="stylesheet">*@
+    <link href="~/ElaAdmin-master/ElaAdmin-master/assets/css/Created/googlefonts.css" rel="stylesheet" />
+
+    <!-- Bootstrap -->
+    <link type="text/css" rel="stylesheet" href="~/css/bootstrap.min.css" />
+    @*<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">*@
+
+    <!-- comment animate -->
+    <link href="~/ElaAdmin-master/ElaAdmin-master/assets/css/Created/animate.css-4.1.1/animate.min.css" rel="stylesheet" />
+
+    <!-- Slick -->
+    <link type="text/css" rel="stylesheet" href="~/css/slick.css" />
+    <link type="text/css" rel="stylesheet" href="~/css/slick-theme.css" />
+
+    <!-- nouislider -->
+    <link type="text/css" rel="stylesheet" href="~/css/nouislider.min.css" />
+
+    <!-- Font Awesome Icon -->
+    <link rel="stylesheet" href="~/css/font-awesome.min.css">
+
+    <!-- Custom stlylesheet -->
+    <link type="text/css" rel="stylesheet" href="~/css/style.css" />
+    <!--<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>--> @*مهم*@
+    <script src="~/ElaAdmin-master/ElaAdmin-master/assets/css/Created/sweetalert.js"></script>
+    <!--<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.min.css" rel="stylesheet" />--> @*مهم*@
+    @*<link href="~/ElaAdmin-master/ElaAdmin-master/assets/css/Created/sweetalert.css" rel="stylesheet" />*@
+
+    @*<link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet">*@
+    <link href="~/ElaAdmin-master/ElaAdmin-master/assets/css/Created/toastr.min.css" rel="stylesheet" />
+    <style>
+        .grid4 {
+            border-bottom: 1px solid #dedcdc;
+            padding-bottom: 2%;
+        }
+        #centertxt {
+            margin: 0;
+            padding: 2rem;
+            font-size: 21px;
+            font-weight: 700;
+            color: #404040;
+        }
+
+        #toast-container > .toast-custom {
+            content: "\f004";
+        }
+
+        .toast-custom {
+            background-color: #760216;
+        }
+
+        #myBtn {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            right: 30px;
+            z-index: 99;
+            font-size: 18px;
+            border: none;
+            outline: none;
+            background-color: red;
+            color: white;
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 4px;
+        }
+
+        .switch {
+            color: #D10024;
+            background-color: transparent;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- HEADER -->
+    <header>
+        <!-- TOP HEADER -->
+        <div id="top-header">
+            <div class="container">
+                <ul class="header-links pull-left">
+                    <li><a href="#"><i class="fa fa-phone"></i> +201013955350</a></li>
+                    <li><a href="#"><i class="fa fa-envelope-o"></i> WonderHardware4@gmail.com</a></li>
+                    <li><a href="#"><i class="fa fa-map-marker"></i>شارع الجلاء بجوار البنك الاهلي</a></li>
+                </ul>
+                <ul class="header-links pull-right">
+
+                    <li id="SignRegister" style="display:none"><a href="/Home/Login_Register?Wishlist=Index"><i class="fa fa-sign-in"></i> SignIn / Register</a></li>
+                    <li id="UserName" style="display:none">
+                        <a>
+                            <i class="fa fa-user-o"></i>
+                            @HttpContextAccessor.HttpContext.Session.GetString("UserName")
+                            <span id="name"></span>
+                        </a>
+                        &nbsp;
+                        |
+                    </li>
+
+                    &nbsp;
+
+                    <li id="LogOut" style="display: none"><a id="logouthref" href="/Home/LogOut?UserID=@HttpContextAccessor.HttpContext.Session.GetInt32("UserID")"><i class="fa fa-sign-out"></i> LogOut </a></li>
+
+
+                </ul>
+            </div>
+        </div>
+        <!-- /TOP HEADER -->
+        <!-- MAIN HEADER -->
+        <div id="header">
+            <!-- container -->
+            <div class="container">
+                <!-- row -->
+                <div class="row">
+                    <!-- LOGO -->
+                    <div class="col-md-3">
+                        <div class="header-logo">
+                            <a asp-area="" asp-controller="Home" asp-action="Index" class="logo">
+                                <img src="~/img/photo_2022-07-01_17-11-59-removebg-preview.png" alt="" style="margin-top:5px" class="img-responsive">
+                            </a>
+                        </div>
+                    </div>
+                    <!-- /LOGO -->
+                    <!-- SEARCH BAR -->
+                    <div class="col-md-6">
+                        <div class="header-search">
+                            <form>
+                                <select id="selectval" class="input-select">
+                                    <option value="0">All Categories</option>
+                                    <option value="1">MotherBoard</option>
+                                    <option value="2">Processor</option>
+                                    <option value="3">Ram</option>
+                                    <option value="4">SSD</option>
+                                    <option value="5">HDD</option>
+                                    <option value="6">Case</option>
+                                    <option value="7">Power Supply</option>
+                                    <option value="8">VGA</option>
+                                </select>
+                                <input autocomplete="off" id="txtsearch" class="input" placeholder="Search here">
+                                <ul id="searchitems" class="dropdown-menu" style="display: none; width: calc(100% - 256px); margin-left: 150px; "></ul>
+                                <button id="btnsearch" class="search-btn">Search</button>
+                            </form>
+                        </div>
+                    </div>
+                    <!-- /SEARCH BAR -->
+                    <!-- ACCOUNT -->
+                    <div class="col-md-3 clearfix" style="display: contents;">
+                        <div class="header-ctn">
+                            <!-- Chat -->
+                            <div>
+                                <a href="#" onclick="location.href='@Url.Action("Chat")'">
+                                    <i class="fa fa-envelope"></i>
+                                    <span>Contact Us</span>
+
+                                    <div hidden="hidden" class="qty" id="MessagesCounterr"></div>
+
+                                </a>
+                            </div>
+                            <!-- /Chat -->
+                            <!-- Wishlist -->
+                            <div>
+                                <a href="#" onclick="location.href='@Url.Action("WishList")'">
+                                    <i class="fa fa-heart-o"></i>
+                                    <span>Your Wishlist</span>
+                                    <div id="wishlistCounter"></div>
+                                </a>
+                            </div>
+                            <!-- /Wishlist -->
+                            <!-- Cart -->
+                            <div class="dropdown">
+                                <a href="#" onclick="location.href='@Url.Action("Cart")'" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
+                                    <i class="fa fa-shopping-cart"></i>
+                                    <span>Your Cart</span>
+                                    <div class="qty" id="Counter">0</div>
+                                </a>
+                                @*<div class="cart-dropdown">
+                                        <div class="cart-list">
+                                            <div class="product-widget">
+                                                <div class="product-img">
+                                                    <img src="~/img/product01.png" alt="">
+                                                </div>
+                                                <div class="product-body">
+                                                    <h3 class="product-name"><a href="#">product name goes here</a></h3>
+                                                    <h4 class="product-price"><span class="qty">1x</span>$980.00</h4>
+                                                </div>
+                                                <button class="delete"><i class="fa fa-close"></i></button>
+                                            </div>
+
+                                            <div class="product-widget">
+                                                <div class="product-img">
+                                                    <img src="~/img/product02.png" alt="">
+                                                </div>
+                                                <div class="product-body">
+                                                    <h3 class="product-name"><a href="#">product name goes here</a></h3>
+                                                    <h4 class="product-price"><span class="qty">3x</span>$980.00</h4>
+                                                </div>
+                                                <button class="delete"><i class="fa fa-close"></i></button>
+                                            </div>
+                                        </div>
+                                        <div class="cart-summary">
+                                            <small>3 Item(s) selected</small>
+                                            <h5>SUBTOTAL: $2940.00</h5>
+                                        </div>
+                                        <div class="cart-btns">
+                                            <a href="#">View Cart</a>
+                                            <a href="#">Checkout  <i class="fa fa-arrow-circle-right"></i></a>
+                                        </div>
+                                    </div>*@
+                            </div>
+                            <!-- /Cart -->
+                            <!-- Menu Toogle -->
+                            <div class="menu-toggle">
+                                <a href="#">
+                                    <i class="fa fa-bars"></i>
+                                    <span>Menu</span>
+                                </a>
+                            </div>
+                            <!-- /Menu Toogle -->
+                        </div>
+                    </div>
+                    <!-- /ACCOUNT -->
+                </div>
+                <!-- row -->
+            </div>
+            <!-- container -->
+        </div>
+        <!-- /MAIN HEADER -->
+    </header>
+    <!-- /HEADER -->
+    <!-- NAVIGATION -->
+    <nav id="navigation">
+        <!-- container -->
+        <div class="container">
+            <!-- responsive-nav -->
+            <div id="responsive-nav">
+                <!-- NAV -->
+                <ul class="main-nav nav navbar-nav" id="products">
+                    <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
+                    <li><a asp-area="" asp-controller="Home" asp-action="Motherboard">Motherboard</a></li>
+                    <li><a asp-area="" asp-controller="Home" asp-action="Processor" id="pro">Processor</a></li>
+                    <li><a asp-area="" asp-controller="Home" asp-action="HDD">Hdd</a></li>
+                    <li><a asp-area="" asp-controller="Home" asp-action="RAM">Ram</a></li>
+                    <li><a asp-area="" asp-controller="Home" asp-action="GraphicsCard">Graphics Card</a></li>
+                    <li><a asp-area="" asp-controller="Home" asp-action="SSD">SSD</a></li>
+                    <li><a asp-area="" asp-controller="Home" asp-action="PowerSuply">Power Supply</a></li>
+                    <li><a asp-area="" asp-controller="Home" asp-action="Case">Case</a></li>
+                </ul>
+                <!-- /NAV -->
+            </div>
+            <!-- /responsive-nav -->
+        </div>
+        <!-- /container -->
+    </nav>
+    <!-- /NAVIGATION -->
+    @RenderBody()
+    <!-- FOOTER -->
+    <!-- terms modal -->
+    <div class="modal fade" id="termsAndConModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">terms & conditions</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="q3" style="margin:30px 15px">
+                        <div class="question listformat">1. Terms and conditions of sale </div>
+                        <p class="txt">
+                            1.1. You acknowledge and agree that: <br>
+                        </p><ul style="list-style-type: none;">
+                            <li>
+                                1.1.1. the marketplace provides an online location for sellers to sell and buyers to purchase products.
+                            </li>
+                            <li>
+                                1.1.2. we shall accept binding sales, on behalf of sellers, but WonderHaredware is not a party to the transaction between the seller and the buyer.
+                            </li>
+                            <li>
+                                1.1.3. a contract for the sale and purchase of a product or products will come into force between the buyer and seller, and accordingly you commit to buying or selling the relevant product or products, upon the buyer’s confirmation of purchase via the marketplace.
+                            </li>
+                        </ul><br>
+                        1.2. Subject to these general terms and conditions, the seller’s terms of business shall govern the contract for sale and purchase between the buyer and the seller. Notwithstanding this, the following provisions will be incorporated into the contract of sale and purchase between the buyer and the seller: <br>
+                        <ul style="list-style-type: none;">
+                            <li>1.2.1. the price for a product will be as stated in the relevant product listing; </li>
+                            <li>
+                                1.2.2. the price for the product must include all taxes and comply with applicable laws in force from time to time;
+                            </li>
+                            <li>
+                                1.2.3. delivery charges, packaging charges, handling charges, administrative charges, insurance costs, other ancillary costs and charges, will only be payable by the buyer if this is expressly and clearly stated in the product listing;
+                            </li>
+                            <li>
+                                1.2.4. products must be of satisfactory quality, fit and safe for any purpose specified in, and conform in all material respects to, the product listing and any other description of the products supplied or made available by the seller to the buyer.
+                            </li>
+                            <li>
+                                1.2.5. the seller warrants that the seller has good title to, and is the sole legal and beneficial owner of, the products, and that the products are not subject to any third party rights or restrictions including in respect of third party intellectual property rights and/or any criminal, insolvency or tax investigation or proceedings.
+                            </li>
+                        </ul><br>
+                        <p></p>
+                    </div>
+                    <div id="q5" style="margin:30px 15px">
+                        <div class="question listformat">2. Payments </div>
+                        <p class="txt">
+                            2.1. You must make payments due under these general terms and conditions in accordance with the Payments Information and Guidelines on the marketplace. <br>
+                        </p>
+                    </div>
+                    <div id="q6" style="margin:30px 15px">
+                        <div class="question listformat">3. Store Credit </div>
+                        <p class="txt">
+                            3.1. Store Credits may be earned and managed in accordance with the WonderHaredware Store Credit Terms and Conditions, as may be amended from time to time.&nbsp;WonderHaredware reserves the right to cancel or withdraw WonderHaredware store credit rewards for any reason in its discretion, including if we suspect fraud or foul play. You can view Reward Store Credit terms and conditions on our website. <br>
+                        </p>
+                    </div>
+                    <div id="q7" style="margin:30px 15px">
+                        <div class="question listformat">3. Promotions </div>
+                        <p class="txt">
+                            3.1. Promotions and competitions run by WonderHaredware and/or other promoters shall be managed in accordance with the Promotions Terms and Conditions. You can view each Promotion's terms and conditions on our website. <br>
+                        </p>
+                    </div>
+                    <div id="q8" style="margin:30px 15px">
+                        <div class="question listformat">4. Data privacy </div>
+                        <p class="txt">
+                            4.1. Buyers agree to processing of their personal data in accordance with the terms of WonderHaredware’s Privacy and Cookie Notice. <br>
+                            4.2. WonderHaredware shall process all personal data obtained through the marketplace and related services in accordance with the terms of our Privacy and Cookie Notice and Privacy Policy. <br>
+                            4.3. Sellers shall be directly responsible to buyers for any misuse of their personal data and WonderHaredware shall bear no liability to buyers in respect of any misuse by sellers of their personal data. <br>
+                        </p>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /terms modal -->
+    <!-- aboutUs modal -->
+    <div class="modal fade" id="aboutUsModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">About Us</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    It is one of the hardware online stores in egypt.
+                    Starting from 4 employees, and we hope in the future to have thousands of employees.
+                    Deliveries to all cities in Egypt.
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- /aboutUs modal -->
+    <!-- privacy modal -->
+    <div class="modal fade" id="privacyModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Privacy Policy</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="q1" style="margin:30px 0">
+                        <div class="question listformat">1. About this Notice  </div>
+                        <p class="txt">
+                            This Privacy and Cookie Notice provides information on how WonderHardware collects and processes your personal data when you visit our website or mobile applications.
+                        </p>
+                    </div>
+
+
+
+                    <div id="q2" style="margin:30px 0">
+                        <div class="question listformat">2. The data we collect about you </div>
+                        <p class="txt">
+                            We collect your personal data in order to provide and continually improve our products and services.<br />
+                            We may collect, use, store and transfer the following different kinds of personal data about you:<br />
+                            <ul>
+                                <li>Information you provide to us:  We receive and store the information you provide to us including your identity data, contact data, delivery address and financial data. </li>
+                                <li>Information on your use of our website and/or mobile applications: We automatically collect and store certain types of information regarding your use of the WonderHardware marketplace including information about your searches, views, downloads and purchases.</li>
+                                <li>Information from third parties and publicly available sources: We may receive information about you from third parties including our carriers; payment service providers; merchants/brands; and advertising service providers. </li>
+                            </ul>
+                        </p>
+                    </div>
+
+                    <div id="q3" style="margin:30px 0">
+                        <div class="question listformat">3. Cookies and how we use them   </div>
+                        <p class="txt">
+                            A cookie is a small file of letters and numbers that we put on your computer if you agree.<br />
+                            Cookies allow us to distinguish you from other users of our website and mobile applications, which helps us to provide you with an enhanced browsing experience.  For example we use cookies for the following purposes:<br />
+                            <ul>
+                                <li>
+                                    Recognising and counting the number of visitors and to see how visitors move around the site when they are using it (this helps us to improve the way our website works, for example by ensuring that users can find what they are looking for).
+                                </li>
+                                <li>Identifying your preferences and subscriptions e.g. language settings, saved items, items stored in your basket and primo membership</li>
+                                <li>Sending you newsletters and commercial/advertising messages tailored to your interests. </li>
+                            </ul><br />
+                            Our approved third parties may also set cookies when you use our marketplace.  Third parties include search engines, providers of measurement and analytics services, social media networks and advertising companies.
+                        </p>
+                    </div>
+
+                    <div id="q4" style="margin:30px 0">
+                        <div class="question listformat">4. How we use your personal data </div>
+                        <p class="txt">
+                            We use your personal data to operate, provide, develop and improve the products and services that we offer, including the following:
+                            <ul>
+                                <li>Registering you as a new customer.</li>
+                                <li>Processing and delivering your orders.</li>
+                                <li>Managing your relationship with us.</li>
+                                <li>Enabling you to participate in promotions, competitions and surveys. </li>
+                                <li>Improving our website, applications, products and services</li>
+                                <li>Recommending/advertising products or services which may be of interest to you.</li>
+                                <li>Complying with our legal obligations, including verifying your identity where necessary. </li>
+                                <li>Detecting fraud</li>
+                            </ul><br />
+                        </p>
+                    </div>
+
+
+                    <div id="q5" style="margin:30px 0">
+                        <div class="question listformat">5. How we share your personal data</div>
+                        <p class="txt">
+                            We may need to share your personal data with third parties for the following purposes:<br />
+                            <ul>
+                                <li>Sale of products and services: In order to deliver your products and services purchased on our marketplace from third parties, we may be required to provide your personal data to such third parties. </li>
+                                <li>
+                                    Working with third party service providers: We engage third parties to perform certain functions on our behalf. Examples include fulfilling orders for products or services, delivering packages, analyzing data, providing marketing assistance, processing payments, transmitting content, assessing and managing credit risk, and providing customer service.
+                                </li>
+                                <li>Business transfers: As we continue to develop our business, we might sell or buy other businesses or services. In such transactions, customer information may be transferred together with other business assets. </li>
+                                <li>Detecting fraud and abuse: We release account and other personal data to other companies and organizations for fraud protection and credit risk reduction, and to comply with the law.  </li>
+                            </ul><br />
+
+                            When we share your personal data with third parties we: <br />
+                            <ul>
+                                <li>require them to agree to use your data in accordance with the terms of this Privacy and Cookie Notice, our Privacy Policy and in accordance with the law</li>
+                                <li>only permit them to process your personal data for specified purposes and in accordance with our instructions.  We do not allow our third-party service providers to use your personal data for their own purposes. </li>
+                            </ul><br />
+                        </p>
+                    </div>
+
+
+                    <div id="q6" style="margin:30px 0">
+                        <div class="question listformat">6. International transfers </div>
+                        <p class="txt">
+                            We may transfer your personal data to locations in another country, if this is permissible pursuant to applicable laws in your location.  There are inherent risks in such transfers.  <br />
+                            In the event of international transfers of your personal data, we shall put in place measures necessary to protect your data, and we shall continue to respect your legal rights pursuant to the terms of this Privacy and Cookie Notice and applicable laws in your location.
+                        </p>
+                    </div>
+
+                    <div id="q7" style="margin:30px 0">
+                        <div class="question listformat">7.  Data security   </div>
+                        <p class="txt">
+                            We have put in place appropriate security measures to prevent your personal data from being accidentally lost, used or accessed in an unauthorised way, altered or disclosed. <br />
+                            In addition, we limit access to your personal data to those employees, agents, contractors and other third parties who have a business need to know. They will only process your personal data on our instructions and they are subject to a duty of confidentiality.<br />
+                            We have put in place procedures to deal with any suspected personal data breach and will notify you and any applicable regulator of a breach where we are legally required to do so.
+
+                        </p>
+                    </div>
+
+                    <div id="q8" style="margin:30px 0">
+                        <div class="question listformat">8.  Your legal rights </div>
+                        <p class="txt">
+                            It is important that the personal data we hold about you is accurate and current. Please keep us informed if your personal data changes during your relationship with us.
+
+                            <br />Under certain circumstances, you have rights under data protection laws in relation to your personal data, including the right to access, correct or erase your personal data, object to or restrict processing of your personal data, and unsubscribe from our emails and newsletters.
+                        </p>
+                    </div>
+
+
+                    <div id="q9" style="margin:30px 0">
+                        <div class="question listformat">9.  Further details</div>
+                        <p class="txt">
+                            If you are looking for more information on how we process your personal data, or you wish to exercise your legal rights in respect of your personal data<br />
+                        </p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- /privacy modal -->
+    <!-- orders and returns modal -->
+    <div class="modal fade" id="orderReturnsModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Orders and Returns</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <h2 id="centertxt">How To Initiate Your Return?</h2>
+                    <div class="grid4">
+                        <center>
+                            <img src="~/img/Index/returnOrder1.png" alt="Initiate Return" />
+                            <h3 style="font-size: 18px; font-weight: 700; color: #D10024">Initiate Return</h3>
+                            <p style=" font-size: 15.9px; ">
+                                Return via <a href="/Home/Chat" target="_blank">Contact Page</a> if you have any questions.
+                            </p>
+                        </center>
+                    </div>
+                    <div class="grid4">
+                        <center>
+                            <img src="~/img/Index/returnOrder2.png" alt="Initiate Return" />
+                            <h3 style="font-size: 18px; font-weight: 700; color: #D10024">Schedule a Pick-up</h3>
+                            <p style=" font-size: 15.9px; ">
+                                We will send a courier to your door step to return the product.
+                            </p>
+                        </center>
+                    </div>
+                    <div class="grid4">
+                        <center>
+                            <img src="~/img/Index/returnOrder3.png" alt="Initiate Return" />
+                            <h3 style="font-size: 18px; font-weight: 700; color: #D10024">Return the item</h3>
+                            <p style=" font-size: 15.9px; ">
+                                Place the item in its original packaging, including any accessories, tags, labels or freebies.
+                            </p>
+                        </center>
+                    </div>
+                    <div class="grid4" style="border-bottom: 4px solid #dedcdc ">
+                        <center>
+                            <img src="~/img/Index/returnOrder4.png" alt="Initiate Return" />
+                            <h3 style="font-size: 18px; font-weight: 700; color: #D10024">Refund Processed</h3>
+                            <p style=" font-size: 15.9px; ">
+                                Once we receive your returned item, we will inspect it and process your refund via voucher or bank transfer. See our timelines.
+                            </p>
+                        </center>
+                    </div>
+                    <br />      
+                    <h2 id="centertxt">Returning An Item</h2>
+
+                    You can request a return within the first 14 days from the delivery date in case you changed your mind (the item must be in its original condition and resale-able).
+                    And up to 30 days in case the item has a defect.
+
+                    Bear in mind that if you received an item with a clear defect (broken) or has a missing part, you must flag this issue within 48hrs from the delivery date.
+
+                    When returning an item, ensure all seals, tags and accessories are left intact and the item is in its original packaging.
+                    If you have created a password on the device you wish to return, please ensure it is removed, otherwise, your return will be invalid.
+
+                    Noting that Electronics Items are not returnable under “Change in mind reason” if it is not sealed and in their original packaging.
+                    We can return all the products if it's sealed, if not:
+                    Find below the table showing what you can return (In case of change mind).
+                    <br />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- /terms modal -->
+
+
+    <footer id="footer">
+
+        <div class="section">
+            <!-- container -->
+            <div class="container">
+                <!-- row -->
+                <div class="row">
+                    <div class="col-md-3 col-xs-6">
+                        <div class="footer">
+                            <h3 class="footer-title">About Us</h3>
+
+                            <ul class="footer-links">
+                                <li><a href="#"><i class="fa fa-map-marker"></i>شارع الجلاء بجوار البنك الاهلي</a></li>
+                                <li><a href="#"><i class="fa fa-phone"></i>+201013955350</a></li>
+                                <li><a href="#"><i class="fa fa-envelope-o"></i>WonderHardware4@gmail.com</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="clearfix visible-xs"></div>
+
+                    <div class="col-md-3 col-xs-6">
+                        <div class="footer">
+                            <h3 class="footer-title">Information</h3>
+                            <ul class="footer-links">
+                                <li><a href="#" data-toggle="modal" data-target="#aboutUsModalLong">About Us</a></li>
+                                <li><a href="#" data-toggle="modal" data-target="#privacyModalLong">Privacy Policy</a></li>
+                                <li><a href="#" data-toggle="modal" data-target="#orderReturnsModalLong">Orders and Returns</a></li>
+                                <li><a href="#" data-toggle="modal" data-target="#termsAndConModalLong">Terms & Conditions</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3 col-xs-6">
+                        <div class="footer">
+                            <h3 class="footer-title">Service</h3>
+                            <ul class="footer-links">
+                                <li><a href="/Home/Cart">View Cart</a></li>
+                                <li><a href="/Home/WishList">Wishlist</a></li>
+                                <li><a href="/Home/Chat">Contact Us</a></li>
+                                <li><a href="/Home/CheckOut">Track My Order</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <!-- /row -->
+            </div>
+            <!-- /container -->
+        </div>
+    </footer>
+    <div onclick="Up()" id="myBtn" title="Go to top">UP</div>
+    <!-- /FOOTER -->
+    <!-- jQuery Plugins -->
+    <script src="~/js/signalr/dist/browser/signalr.js"></script>
+    <script src="~/js/jquery.min.js"></script>
+    <script src="~/js/bootstrap.min.js"></script>
+    <script src="~/js/slick.min.js"></script>
+    <script src="~/js/nouislider.min.js"></script>
+    <script src="~/js/jquery.zoom.min.js"></script>
+    <script src="~/js/main.js"></script>
+    <script src="~/js/Wonder.js"></script>
+    <script src="~/ElaAdmin-master/ElaAdmin-master/assets/css/Created/toastr.min.js"></script>
+
+    @if (IsSectionDefined("Services"))
+    {
+        { await RenderSectionAsync("Services", true); }
+
+    }
+    else
+    {
+        {
+            await RenderSectionAsync("Services", false);
+        }
+    }
+    <style>
+    </style>
+
+</body>
+</html>
+<script>
+
+var mybutton = document.getElementById("myBtn");
+
+// When the user scrolls down 20px from the top of the document, show the button
+window.onscroll = function() {scrollFunction()};
+
+function scrollFunction() {
+  if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+    mybutton.style.display = "block";
+  } else {
+    mybutton.style.display = "none";
+  }
+}
+
+// When the user clicks on the button, scroll to the top of the document
+function Up() {
+    document.body.scrollTop = 0;
+    document.documentElement.scrollTop = 0;
+}
+/// End
+        var userID=@HttpContextAccessor.HttpContext.Session.GetInt32("UserID").GetValueOrDefault();
+        "use strict";
+        var connection = new signalR.HubConnectionBuilder().withUrl("/chatHub").build();
+
+        $(document).ready(function () {
+            var WishList = $("#wishlist").val();
+            cartconnection();
+            wishlistconnection();
+            GetMessagesCounterinuser("");
+
+            $('#txtsearch').keyup(function () {
+                var Number = $('#selectval').val();
+                var Search = $('#txtsearch').val();
+                $('#searchitems').css("display", "none");
+                if (Search == "") {
+                    //لو كتبت ومسحت هتبقا فاضيه
+                    $('#searchitems').css("display", "none");
+                }
+                else {
+                    var html = '';
+                    var i = 0;
+                    $.ajax({
+                        url: "/Home/Search?src=" + Search + "&num=" + Number,
+                        type: "GET",
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "json",
+                        success: function (result) {
+                            $.each(result, function (key, item) {
+                                if (i < 10) {
+                                    html += '<li class="text-truncate"><a href="javascript:gotoDetails(' + "'" + item.productCode + "'" + ')">' + item.productName + '</a></li>';
+                                    i++;
+                                }
+                                else {
+                                    html += '<li style="text-align:center;"><a style="background: none;border: none;" href="javascript:GetAllSearch(' + Number + ',';
+                                    html += "'"+Search+"')";
+                                    html += '">+' + (result.length - 10) + '</a></li> ';
+                                    //عايزه اخرج من الإيتش
+                                    return false;
+                                }
+
+                            });
+                            if (result.length == 0) {
+                                //لو جايه بداتا فاضيه (ملقتش نتايج مطلوبه).ء
+                                html += '<li style="text-align:center;">No Results</li>';
+                            }
+
+                            $('#searchitems').html(html).css("display", "block");
+                        }
+                    });
+                }
+            });
+
+            //$(document).on('click', function (e) {
+            //    //to hide search results Box after clicking outside(SearchBox Or ResultsBox)
+            //    var container1 = $("#searchitems");
+            //    var container2 = $("#txtsearch");
+            //    if (!($(e.target).closest(container1).length || $(e.target).closest(container2).length)) {
+            //        container1.hide();
+            //    }
+            //    //To Clear Popup Inputs when Popup disappeared
+            //    if (!$('#LoginRegister').hasClass('in')) {
+            //        $('#telephone1').val(""); $('#password1').val(""); $('#fname').val(""); $('#lname').val("");
+            //        $('#telephone2').val(""); $('#password2').val(""); $('#password3').val(""); $('#validphone11').hide();
+            //        $('#validphone12').hide(); $('#validphone13').hide(); $('#validphone14').hide(); $('#validpassword12').hide();
+            //        $('#validpassword11').hide(); $('#validfname').hide(); $('#invalidfname').hide(); $('#validlname').hide();
+            //        $('#invalidlname').hide(); $('#validphone21').hide(); $('#validphone22').hide(); $('#validphone23').hide();
+            //        $('#validphone24').hide(); $('#validpassword21').hide(); $('#invalidpassword').hide(); $('#validpassword22').hide();
+            //        $('#validpassword23').hide();
+            //        displybtnregister();
+            //        if ($('#btnLogin').hasClass("btn login disabled")) {
+            //            //البوبب
+            //            $('#btnLogin').removeClass('btn login disabled').addClass('btn login');
+            //        }
+            //        else if ($('#btnLogin').hasClass("primary-btn btn-block order-submit disabled")) {
+            //            //صفحه اللوجن الاساسيه
+            //            $('#btnLogin').removeClass('primary-btn btn-block order-submit disabled').addClass('primary-btn btn-block order-submit').css('background-color', '');
+            //        }
+            //    }
+            //});
+
+            $("#btnsearch").click(function () {
+                var Number = $('#selectval').val();
+                var Search = $('#txtsearch').val();
+                //window.location.href = "/Home/Search?src=" + Search + "&num=" + Number + "&txt='ButtonOrBlus'";
+                GetAllSearch(Number, Search);
+            });
+
+
+            //login&register
+
+            $('#telephone1').keyup(function () {
+                $('#validphone11').hide();
+                $('#validphone12').hide();
+                $('#validphone13').hide();
+                $('#validphone14').hide();
+                if ($('#btnLogin').hasClass("btn login disabled")) {
+                    //البوبب
+                    $('#btnLogin').removeClass('btn login disabled').addClass('btn login');
+                }
+                else if ($('#btnLogin').hasClass("primary-btn btn-block order-submit disabled")) {
+                    //صفحه اللوجن الاساسيه
+                    $('#btnLogin').removeClass('primary-btn btn-block order-submit disabled').addClass('primary-btn btn-block order-submit').css('background-color', '');
+                }
+                var telephone1 = $('#telephone1').val();
+                if (jQuery.isNumeric(telephone1) != true && telephone1 != "") {
+                    $('#validphone13').show();
+                    if ($('#btnLogin').hasClass("btn login")) {
+                        //البوبب
+                        $('#btnLogin').addClass('disabled');
+                    }
+                    else if ($('#btnLogin').hasClass('primary-btn btn-block order-submit')) {
+                        //صفحه اللوجن الاساسيه
+                        $('#btnLogin').css('background-color', 'grey').addClass('disabled');
+                    }
+                }
+                else if (telephone1.length > 11) {
+                    $('#validphone14').show();
+                    if ($('#btnLogin').hasClass("btn login")) {
+                        //البوبب
+                        $('#btnLogin').addClass('disabled');
+                    }
+                    else if ($('#btnLogin').hasClass('primary-btn btn-block order-submit')) {
+                        //صفحه اللوجن الاساسيه
+                        $('#btnLogin').css('background-color', 'grey').addClass('disabled');
+                    }
+                }
+            });
+            $('#password1').keyup(function () {
+                $('#validpassword12').hide();
+                $('#validpassword11').hide();
+                if ($('#btnLogin').hasClass("btn login disabled")) {
+                    //البوبب
+                    $('#btnLogin').removeClass('btn login disabled').addClass('btn login');
+                }
+                else if ($('#btnLogin').hasClass("primary-btn btn-block order-submit disabled")) {
+                    //صفحه اللوجن الاساسيه
+                    $('#btnLogin').removeClass('primary-btn btn-block order-submit disabled').addClass('primary-btn btn-block order-submit').css('background-color', '');
+                }
+            });
+
+            $('#btnLogin').click(function () {
+                var telephone1 = $('#telephone1').val();
+                var password1 = $('#password1').val();
+                if (telephone1 == "" || telephone1 == undefined || telephone1.length != 11 || password1 == "" || password1 == undefined) {
+                    if ($('#btnLogin').hasClass("btn login")) {
+                        //البوبب
+                        $('#btnLogin').addClass('disabled');
+                    }
+                    else if ($('#btnLogin').hasClass('primary-btn btn-block order-submit')) {
+                        //صفحه اللوجن الاساسيه
+                        $('#btnLogin').css('background-color', 'grey').addClass('disabled');
+                    }
+                    if (telephone1 == "" || telephone1 == undefined) {
+                        $('#validphone11').show();
+                    }
+                    else if (telephone1.length != 11) {
+                        $('#validphone14').show();
+                    }
+                    if (password1 == "" || password1 == undefined) {
+                        $('#validpassword11').show();
+                    }
+                }
+                else {
+                    $.ajax({
+                        url: "/Home/Login?Password=" + password1 +
+                            "&Telephone=" + telephone1 + "&WishList=" + WishList,
+                        type: "GET",
+                        contentType: "application/json;charset=utf-8",
+                        dataType: "json",
+                        success: function (result) {
+                            if (result["page"] == "this phone isn't exist") {
+                                $('#validphone12').show();
+                            }
+                            else if (result["page"] == "wrong password") {
+                                $('#validpassword12').show();
+                            }
+                            else {
+                                GoTo(result)
+                            }
+                        }
+                    });
+                }
+
+            });
+
+            $('#fname').keyup(function () {
+                $('#validfname').hide();
+                var fname = $('#fname').val();
+                if (($.trim(fname) == "" && fname != "") || fname.includes("  ") || /\d/.test(fname)) {
+                    $('#invalidfname').show();
+                    if ($('#btnRegist').hasClass("btn login")) {
+                        //البوبب
+                        $('#btnRegist').addClass('disabled');
+                    }
+                    else if ($('#btnRegist').hasClass('primary-btn btn-block order-submit')) {
+                        //صفحه اللوجن الاساسيه
+                        $('#btnRegist').css('background-color', 'grey').addClass('disabled');
+                    }
+                }
+                else {
+                    $('#invalidfname').hide();
+                    displybtnregister();
+                }
+            });
+
+            $('#lname').keyup(function () {
+                $('#validlname').hide();
+                var lname = $('#lname').val();
+                if (($.trim(lname) == "" && lname != "") || lname.includes("  ") || /\d/.test(lname)) {
+                    $('#invalidlname').show();
+                    if ($('#btnRegist').hasClass("btn login")) {
+                        //البوبب
+                        $('#btnRegist').addClass('disabled');
+                    }
+                    else if ($('#btnRegist').hasClass('primary-btn btn-block order-submit')) {
+                        //صفحه اللوجن الاساسيه
+                        $('#btnRegist').css('background-color', 'grey').addClass('disabled');
+                    }
+                }
+                else {
+                    $('#invalidlname').hide();
+                    displybtnregister();
+                }
+            });
+
+            $('#telephone2').keyup(function () {
+                $('#validphone21').hide();
+                $('#validphone22').hide();
+                $('#validphone23').hide();
+                $('#validphone24').hide();
+                displybtnregister();
+                var telephone2 = $('#telephone2').val();
+                if (jQuery.isNumeric(telephone2) != true && telephone2 != "") {
+                    $('#validphone23').show();
+                    if ($('#btnRegist').hasClass("btn login")) {
+                        //البوبب
+                        $('#btnRegist').addClass('disabled');
+                    }
+                    else if ($('#btnRegist').hasClass('primary-btn btn-block order-submit')) {
+                        //صفحه اللوجن الاساسيه
+                        $('#btnRegist').css('background-color', 'grey').addClass('disabled');
+                    }                }
+                else if (telephone2.length > 11) {
+                    $('#validphone24').show();
+                    if ($('#btnRegist').hasClass("btn login")) {
+                        //البوبب
+                        $('#btnRegist').addClass('disabled');
+                    }
+                    else if ($('#btnRegist').hasClass('primary-btn btn-block order-submit')) {
+                        //صفحه اللوجن الاساسيه
+                        $('#btnRegist').css('background-color', 'grey').addClass('disabled');
+                    }
+                }
+            });
+
+            $('#password2').keyup(function () {
+                $('#validpassword21').hide();
+                var password2 = $('#password2').val();
+                var password3 = $('#password3').val();
+                if ($.trim(password2) == "" && password2 != "") {
+                    $('#invalidpassword').show();
+                    if ($('#btnRegist').hasClass("btn login")) {
+                        //البوبب
+                        $('#btnRegist').addClass('disabled');
+                    }
+                    else if ($('#btnRegist').hasClass('primary-btn btn-block order-submit')) {
+                        //صفحه اللوجن الاساسيه
+                        $('#btnRegist').css('background-color', 'grey').addClass('disabled');
+                    }
+                }
+                else {
+                    $('#invalidpassword').hide();
+                    displybtnregister();
+                }
+                if (password2 != password3 && password3 != "") {
+                     $('#validpassword23').show();
+                    if ($('#btnRegist').hasClass("btn login")) {
+                        //البوبب
+                        $('#btnRegist').addClass('disabled');
+                    }
+                    else if ($('#btnRegist').hasClass('primary-btn btn-block order-submit')) {
+                        //صفحه اللوجن الاساسيه
+                        $('#btnRegist').css('background-color', 'grey').addClass('disabled');
+                    }
+                }
+                else {
+                    $('#validpassword23').hide();
+                    displybtnregister();
+                }
+            });
+
+            $('#password3').keyup(function () {
+                $('#validpassword22').hide();
+                var password2 = $('#password2').val();
+                var password3 = $('#password3').val();
+                if (password2 != password3 && password2 != "") {
+                    $('#validpassword23').show();
+                    if ($('#btnRegist').hasClass("btn login")) {
+                        //البوبب
+                        $('#btnRegist').addClass('disabled');
+                    }
+                    else if ($('#btnRegist').hasClass('primary-btn btn-block order-submit')) {
+                        //صفحه اللوجن الاساسيه
+                        $('#btnRegist').css('background-color', 'grey').addClass('disabled');
+                    }
+                }
+                else {
+                    $('#validpassword23').hide();
+                    displybtnregister();
+                }
+            });
+
+            $('#btnRegist').click(function () {
+                var fname = $.trim($('#fname').val());
+                var lname = $.trim($('#lname').val());
+                var telephone2 = $('#telephone2').val();
+                var password2 = $('#password2').val();
+                var password3 = $('#password3').val();
+
+                if (fname == "" || fname == undefined || lname == "" || lname == undefined || telephone2 == "" || telephone2 == undefined || telephone2.length != 11 || password2 == "" || password2 == undefined || password2 != password3) {
+                    if ($('#btnRegist').hasClass("btn login")) {
+                        //البوبب
+                        $('#btnRegist').addClass('disabled');
+                    }
+                    else if ($('#btnRegist').hasClass('primary-btn btn-block order-submit')) {
+                        //صفحه اللوجن الاساسيه
+                        $('#btnRegist').css('background-color', 'grey').addClass('disabled');
+                    }
+                    if (fname == "" || fname == undefined) {
+                        $('#validfname').show();
+                    }
+                    if (lname == "" || lname == undefined) {
+                        $('#validlname').show();
+                    }
+                    if (telephone2 == "" || telephone2 == undefined) {
+                        $('#validphone21').show();
+                    }
+                    else if (telephone2.length != 11) {
+                        $('#validphone24').show();
+                    }
+                    if (password2 == "" || password2 == undefined) {
+                        $('#validpassword21').show();
+                    }
+                    if (password3 == "" || password3 == undefined) {
+                        $('#validpassword22').show();
+                    }
+                }
+                // لازم نوقف لو ف اي حاجه بترو من اللي فوق
+                else {
+                    $.ajax({
+                        url: "/Home/Register?FName=" + fname +
+                            "&LName=" + lname +
+                            "&Telephone=" + telephone2 +
+                            "&Password=" + password2 + "&WishList=" + WishList,
+                        type: "GET",
+                        contentType: "application/json;charset=utf-8",
+                        dataType: "json",
+                        success: function (result) {
+                            if (result["page"] == "this phone is already exist") {
+                                $('#validphone22').show();
+                            }
+                            else {
+                                GoTo(result);
+                            }
+                        }
+                    });
+                }
+
+            });
+
+        });
+        function displybtnregister() {
+            if ($('#validphone21').is(':hidden') && $('#validphone22').is(':hidden') && $('#validphone23').is(':hidden') && $('#validphone24').is(':hidden')
+                && $('#validpassword21').is(':hidden') && $('#validpassword22').is(':hidden') && $('#validpassword23').is(':hidden')
+                && $('#invalidfname').is(':hidden') && $('#validfname').is(':hidden') && $('#invalidlname').is(':hidden') && $('#validlname').is(':hidden')) {
+
+                if ($('#btnRegist').hasClass("btn login disabled")) {
+                    //البوبب
+                    $('#btnRegist').removeClass('btn login disabled').addClass('btn login');
+                }
+                else if ($('#btnRegist').hasClass('primary-btn btn-block order-submit disabled')) {
+                    //صفحه اللوجن الاساسيه
+                    $('#btnRegist').removeClass('primary-btn btn-block order-submit disabled').addClass('primary-btn btn-block order-submit').css('background-color', '');
+                }
+            }
+        }
+
+    function GoTo(result) {
+        debugger;
+            if (result["page"] == "WishList") {
+                window.location = "/Home/WishList";
+            }
+            else if (result["page"] == "Chat") {
+                window.location = "/Home/Chat";
+            }
+            else if (result["page"] == "Index") {
+                window.location = "/Home/Index";
+            }
+            else {
+                userID = result["Id"];
+                $('#close').click();
+                $("#SignRegister").css("display", "none");
+                $("#UserName").css("display", "contents");
+                $('#name').text(result["Name"]);
+                $("#LogOut").css("display", "contents");
+                $("#logouthref").attr('href', '/Home/LogOut?UserID=' + userID);
+                wishlistconnection();
+                GetMessagesCounterinuser("");
+            }
+        }
+
+        //end login&register
+
+        connection.start().then(function () {
+        }).catch(function (arr) {
+            return console.error(arr.toString());
+        });
+
+        connection.on("ReceiveMessage", function (message, txt, senderid, userid, dictionaryDandT) {
+            debugger;
+            if (txt == "My text as admin" && userID == userid) {
+                GetMessagesCounterinuser("from receive");
+            }
+
+        });
+
+        function GetMessagesCounterinuser(txt) {
+            $.ajax({
+                type: "GET",
+                url: "/Home/GetMessagesCounter?userid=" + userID,
+                dataType: "json",
+                success: function (result) {
+                    //اول ما الصفحه تلود في اي وقت--> من غير ما يتبعت رساله
+                    $('#MessagesCounterr').html(result).removeAttr('hidden');
+                    if (result == 0) {
+                        //اول ما الصفحه تلود لو مفيش ماسدجات مش متشافه هيخفي الدايره بالرقم
+                        $('#MessagesCounterr').attr('hidden', 'hidden');
+                    }
+                    if (txt == "from receive") {
+                        //اكون جايه من الاستدعاء في الريسيف --> يعني الرساله لسه مبعوته
+                        toastr.info('you have new message', '', { timeOut: 7000, positionClass: "toast-bottom-right", progressBar: true, iconClass: "toast-custom" });
+                    }
+                }
+            });
+
+        }
+        function cartconnection() {
+            let s = getItemStorage("Cart") || [];
+            var arr = [];
+            var notificationcount = 0;
+            $.ajax({
+                type: "GET",
+                url: "/Home/GetAvailableProducts",
+                dataType: "json",
+                success: function (result) {
+                    $.each(result, function (key, item) {
+                        arr[key] = item;
+                    });
+                    $.each(s, function (key, item) {
+                        if (arr[item.Code].isAvailable == "Not Available") {
+                            notificationcount++;
+                        }
+                    });
+                    var Counter = s.length - notificationcount;
+                    $('#Counter').html(Counter);
+                }
+            });
+        }
+    function wishlistconnection() {
+        debugger;
+        if (userID != 0)
+            {
+                $("#UserName").css("display", "contents");
+                $("#LogOut").css("display", "contents");
+                $("#SignRegister").css("display", "none");
+                $.ajax({
+                    url: "/Home/WishListCounter",
+                    type: "GET",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (Counter) {
+                        $('#wishlistCounter').addClass("qty");
+                        $('#wishlistCounter').text(Counter);
+                    }
+                });
+            }
+            else{
+                $("#SignRegister").css("display", "contents");
+            }
+        }
+
+        function GetAllSearch(number, search) {
+            $.ajax({
+                url: "/Home/Search?src=" + search + "&num=" + number,
+                type: "GET",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (result) {
+                    //جيت بالليست هروح ع الفيو اعرضها
+                    window.location = "/Home/SearchPage?src=" + search + "&num=" + number;
+                }
+            });
+
+        }
+
+</script>
+

@@ -1,0 +1,65 @@
+﻿@model IEnumerable<Search>
+@{
+    ViewData["Title"] = "SearchPage";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var SearchWord = ViewBag.searchWord;
+}
+
+<div class="section">
+    <!-- container -->
+    <div class="container">
+        <!-- row -->
+        <div class="row">
+
+            <div style="text-align: center;" class="col-md-12">
+                <!-- /store top filter -->
+                @if (Model.Count() != 0)
+                {
+                    @if (Model.Count() == 1)
+                    {
+                        <div style="text-align:left">
+                            @Model.Count() Result for <span style="color: #D10024">"@SearchWord"</span>
+                        </div>
+                    }
+                    else
+                    {
+                        <div style="text-align:left">
+                            @Model.Count() Results for <span style="color: #D10024">"@SearchWord"</span>
+                        </div>
+                    }
+                    @foreach (var item in Model)
+                    {
+                        <div style="display: inline-block; width: 18%; margin: 1%; " class="product">
+                            <div class="product-img">
+                                <img src="~/Images/@item.Image" alt="">
+                            </div>
+                            <div class="product-body">
+                                <h3 class="product-name text-truncate" data-toggle="tooltip" title="@item.ProductName"><a href="#">@item.ProductName</a></h3>
+                                <div class="product-btns">
+                                    <button onclick="gotoDetails('@item.ProductCode')" class="quick-view"><i class="fa fa-eye"></i><span class="tooltipp">View Details</span></button>
+                                </div>
+                            </div>
+
+                        </div>
+                    }
+                }
+                else
+                {
+                    <img src="~/img/Index/Search7.jpg" style="border-radius: 50%;width: 20%;margin-left: auto;margin-right: auto;display: block;" />;
+                    <br />
+                    <div style="text-align: center; display: block; font-size: 18px;"><strong> No Results For '@SearchWord'</strong></div>;
+                    <br />
+                    <a class="primary-btn order-submit" href="/Home/Index" style="margin-left: auto;margin-right: auto;display: block;width: 35%;">Continue Shopping</a>;
+                }
+
+            </div>
+        </div>
+    </div>
+</div>
+<script src="~/js/jquery.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+</script>

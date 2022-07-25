@@ -1,0 +1,887 @@
+﻿@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+
+@{
+    ViewData["Title"] = "CheckOut";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var Userid = HttpContextAccessor.HttpContext.Session.GetInt32("UserID");
+    var Username = HttpContextAccessor.HttpContext.Session.GetString("UserName");
+
+    var UserPhone = ViewBag.UserPhone;
+    var UserAddress = ViewBag.UserAddress;
+
+
+}
+<style>
+    .grid4 {
+        border-bottom: 1px solid #dedcdc;
+        padding-bottom: 2%;
+    }
+    .lst {
+        font-size: 12px;
+        text-align: left;
+        padding: 0 50px;
+        line-height: 22px;
+        list-style-type: disc;
+    }
+    .question {
+        font-size: 17px;
+        color: #D10024;
+        margin: 20px 0;
+        font-weight: 600;
+    }
+</style>
+<!DOCTYPE html>
+<html lang="en">
+<body>
+    <input hidden id="inputHidden" value="@Userid"/>
+    <div id="breadcrumb" class="section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <h3 class="breadcrumb-header">Checkout</h3>
+                    <ul class="breadcrumb-tree">
+                        <li><a href="/Home/Index">Home</a></li>
+                        <li class="active">Checkout</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-7">
+                    <div class="billing-details">
+                        <div class="section-title">
+                            <h3 class="title">Billing Information</h3>
+                        </div>
+                        @if (Userid == null)
+                        {
+                            <div id="bigBlock">
+                                <div class="form-group">
+                                    <div class="input-radio">
+                                        <input type="radio" id="create-account" name="exampleRadios" value="option1" checked />
+                                        <label for="create-account">
+                                            <span></span>
+                                            <strong>Create New Account</strong>
+                                        </label>
+
+                                        <div class="caption" id="createAccDiv">
+                                            <div class="form-group">
+                                                <input id="fname" class="input" type="text" placeholder="First Name" autocomplete="off">
+                                                <span id="validfname" style="display: none; font-size: 13px; color: #D10024">Required field</span>
+                                            </div>
+                                            <div class="form-group">
+                                                <input id="lname" class="input" type="text" placeholder="Last Name" autocomplete="off">
+                                                <span id="validlname" style="display: none; font-size: 13px; color: #D10024">Required field</span>
+                                            </div>
+                                            <div class="form-group">
+                                                <input id="telephone1" class="input" type="tel" placeholder="Telephone" autocomplete="off">
+                                                <span id="validphone21" style="display: none; font-size: 13px; color: #D10024">Required field</span>
+                                                <span id="validphone22" style="display: none; font-size: 13px; color: #D10024">This phone is already Exist !!</span>
+                                            </div>
+                                            <div class="form-group">
+                                                <input id="password1" class="input" type="password" placeholder="Password" autocomplete="off">
+                                                <span id="validpassword21" style="display: none; font-size: 13px; color: #D10024">Required field</span>
+                                            </div>
+                                            <div class="form-group">
+                                                <input id="city1" class="input" type="text" placeholder="City" autocomplete="off">
+                                                <span id="validcity21" style="display: none; font-size: 13px; color: #D10024">Please enter your City</span>
+                                            </div>
+                                            <div class="form-group">
+                                                <input id="address1" class="input" type="text" placeholder="Address" autocomplete="off">
+                                                <span id="validaddress21" style="display: none; font-size: 13px; color: #D10024">Please enter your Address</span>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="input-radio">
+                                        <input type="radio" id="have-account" name="exampleRadios" value="option2">
+                                        <label for="have-account">
+                                            <span></span>
+                                            <strong>Already have an Account</strong>
+                                        </label>
+
+                                        <div class="caption" id="haveAccDiv" hidden>
+                                            <div class="form-group">
+                                                <input id="telephone2" class="input" type="tel" placeholder="Telephone" autocomplete="off">
+                                                <span id="validphone11" style="display: none; font-size: 13px; color: #D10024">Please enter your Phone</span>
+                                                <span id="validphone12" style="display: none; font-size: 13px; color: #D10024">This Phone isn’t Exist !!</span>
+                                            </div>
+                                            <div class="form-group">
+                                                <input id="password2" class="input" type="password" placeholder="Password" autocomplete="off">
+                                                <span id="validpassword11" style="display: none; font-size: 13px; color: #D10024">Please enter your Password</span>
+                                                <span id="validpassword12" style="display: none; font-size: 13px; color: #D10024">Password is Wrong , Try again..</span>
+                                            </div>
+                                            <button id="btncheckAcc" class="primary-btn order-submit">Check Account</button>
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div hidden id="checkedAccSuccess">
+                                <div hidden id="checkedBefore">
+                                    <div>
+                                        <div><span style="color: #D10024">Name: </span><span id="name1" ></span></div><br />
+                                        <div><span style="color: #D10024">Phone: </span><span id="phone"></span></div><br />
+                                        <div><span style="color: #D10024">You checked before to: </span><span id="oldAddress"></span></div>
+                                            <br />
+                                            <div style="margin-top: 45px;">Do you want to checkout to the same address?</div> Or
+                                        </div>
+                                    <div class="form-group" id="addanotherAddress">
+                                        <div class="input-checkbox">
+                                            <input type="checkbox" id="another-address">
+                                            <label for="another-address">
+                                                <span></span>
+                                                add another address
+                                            </label>
+                                            <div class="caption">
+                                                <div class="form-group">
+                                                    <input id="city2" class="input" type="text" placeholder="City" autocomplete="off">
+                                                </div>
+                                                <div class="form-group">
+                                                    <input id="address2" class="input" type="text" placeholder="Address" autocomplete="off">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div hidden id="addAddress" class="caption">
+                                    <div>Name: <span id="name2" style="color: #D10024"></span></div>
+                                    <div>Phone: <span id="phone2" style="color: #D10024"></span></div>
+                                    <br />
+                                    <div class="form-group" style="margin-top: 45px;">
+                                        <input id="city5" class="input" type="text" placeholder="City" autocomplete="off">
+                                        <span id="validcity5" style="display: none; font-size: 13px; color: #D10024">Required field</span>
+
+                                    </div>
+                                    <div class="form-group">
+                                        <input id="address5" class="input" type="text" placeholder="Address" autocomplete="off">
+                                        <span id="validaddress5" style="display: none; font-size: 13px; color: #D10024">Required field</span>
+
+                                    </div>
+                                </div>
+                                <input hidden id="addressOrNot" />
+                            </div>
+                        }
+                        else
+                        {
+                            <img src="/img/Index/user-1.svg" style="border-radius: 50%;width: 100px;margin-left: auto;margin-right: auto;display: block;" />
+                            <div style="text-align: center; margin-left: auto; margin-right: auto;">@Username</div>
+                            <div style="text-align: center; margin-left: auto; margin-right: auto;"><span>0</span>@UserPhone</div>
+                            @if (UserAddress != null)
+                            {
+                                <div>
+                                    The order will be delivered to the address : @UserAddress
+                                </div>
+                                <div class="form-group">
+                                    <div class="input-checkbox">
+                                        <input autocomplete="off" type="checkbox" id="another-address">
+                                        <label for="another-address">
+                                            <span></span>
+                                            Do you want to add another address?
+                                        </label>
+                                        <div class="caption">
+                                            <div class="form-group">
+                                                <input id="city3" autocomplete="off" class="input" type="text" placeholder="City">
+                                            </div>
+                                            <div class="form-group">
+                                                <input id="address3" autocomplete="off" class="input" type="text" placeholder="Address">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="caption">
+                                    <div class="form-group">
+                                        <input id="city4" autocomplete="off" class="input" type="text" placeholder="City">
+                                        <span id="validcity4" style="display: none; font-size: 13px; color: #D10024">Required field</span>
+                                    </div>
+                                    <div class="form-group">
+                                        <input id="address4" autocomplete="off" class="input" type="text" placeholder="Address">
+                                        <span id="validaddress4" style="display: none; font-size: 13px; color: #D10024">Required field</span>
+                                    </div>
+                                </div>
+
+                            }
+                        }
+
+                    </div>
+                </div>
+
+                <div class="col-md-5 order-details">
+                    <div class="section-title text-center">
+                        <h3 class="title">Your Order</h3>
+                    </div>
+                    <div class="dbody">
+                        <div class="order-summary">
+                            <div class="order-col">
+                                <div><strong>PRODUCT</strong></div>
+                                <div><strong>TOTAL</strong></div>
+                            </div>
+                            <div class="order-products">
+                                <div class="order-col">
+                                    <div style="width:100%" id="ProductsDiv">
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="order-col">
+                                <div>Shiping</div>
+                                <div><strong>FREE</strong></div>
+                            </div>
+                            <div class="order-col" style="color: #D10024">
+                                <div><strong>TOTAL</strong> (<span id="TQuantity"></span>)</div>
+                                <div><strong id="TPrice" class="order-total"></strong> LE</div>
+                            </div>
+                        </div>
+                        <div class="payment-method">
+                            <div class="input-radio">
+                                <input type="radio" name="payment" id="payment-1">
+                                <label for="payment-1">
+                                    <span></span>
+                                    Credit Card
+                                </label>
+                                <div class="caption">
+                                    <p>It's Simple, It's Easy and It's Safe. <strong><a href="#" data-toggle="modal" data-target="#creditInfo">How do I pay with my Credit Card?</a></strong></p>
+                                </div>
+                            </div>
+                            <div class="input-radio">
+                                <input type="radio" name="payment" id="payment-2">
+                                <label for="payment-2">
+                                    <span></span>
+                                    Pay on Delivery
+                                </label>
+                                <div class="caption">
+                                    <p>You can pay using Cash or your local Mastercard, VISA to pay on our POS machine at delivery. We only accept Egyptian Pound. We do not accept International cards on our POS machines.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal fade" id="creditInfo" tabindex="-1" role="dialog" aria-labelledby="creditInfoLongTitle" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="creditInfoLongTitle">How to pay with the Credit Card</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="grid4">
+                                            <center>
+                                                <img src="~/img/Index/deliverycart.jpg" />
+                                                <p class="sub-title1">Checkout</p>
+                                            </center>
+                                            <p class="txt1">After having proceeded to checkout, simply select "credit" card payment option.</p>
+                                        </div>
+                                        <div class="grid4">
+                                            <center>
+                                                <img src="~/img/Index/deliverydetails.jpg" />
+                                                <p class="sub-title1">Details</p>
+                                            </center>
+                                            <p class="txt1">Enter your card details such as:</p>
+                                            <ul class="lst">
+                                                <li>Card number</li>
+                                                <li>Expiry date</li>
+                                                <li>Security code</li>
+                                            </ul>
+                                            <p class="txt1">Then complete your order. To secure your payment, some banks will ask you for a security code, sent to your phone.</p>
+                                        </div>
+                                        <div class="grid4" style="border-bottom: none;">
+                                            <center>
+                                                <img src="~/img/Index/delivery.jpg" />
+                                                <p class="sub-title1">Delivery</p>
+                                            </center>
+                                            <p class="txt1">Once we receive your order, we will get it to you as soon as possible.</p><br>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="divterms" class="input-checkbox">
+                            <input type="checkbox" id="terms">
+                            <label for="terms">
+                                <span></span>
+                                I've read and accept the <a href="#" data-toggle="modal" data-target="#exampleModalLong">terms & conditions</a>
+                            </label>
+                        </div>
+
+                        <!-- Modal -->
+                        <div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLongTitle">terms & conditions</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div id="q3" style="margin:30px 15px">
+                                            <div class="question listformat">1. Terms and conditions of sale </div>
+                                            <p class="txt">
+                                                1.1. You acknowledge and agree that: <br>
+                                            </p><ul style="list-style-type: none;">
+                                                <li>
+                                                    1.1.1. the marketplace provides an online location for sellers to sell and buyers to purchase products.
+                                                </li>
+                                                <li>
+                                                    1.1.2. we shall accept binding sales, on behalf of sellers, but WonderHaredware is not a party to the transaction between the seller and the buyer.
+                                                </li>
+                                                <li>
+                                                    1.1.3. a contract for the sale and purchase of a product or products will come into force between the buyer and seller, and accordingly you commit to buying or selling the relevant product or products, upon the buyer’s confirmation of purchase via the marketplace.
+                                                </li>
+                                            </ul><br>
+                                            1.2. Subject to these general terms and conditions, the seller’s terms of business shall govern the contract for sale and purchase between the buyer and the seller. Notwithstanding this, the following provisions will be incorporated into the contract of sale and purchase between the buyer and the seller: <br>
+                                            <ul style="list-style-type: none;">
+                                                <li>1.2.1. the price for a product will be as stated in the relevant product listing; </li>
+                                                <li>
+                                                    1.2.2. the price for the product must include all taxes and comply with applicable laws in force from time to time;
+                                                </li>
+                                                <li>
+                                                    1.2.3. delivery charges, packaging charges, handling charges, administrative charges, insurance costs, other ancillary costs and charges, will only be payable by the buyer if this is expressly and clearly stated in the product listing;
+                                                </li>
+                                                <li>
+                                                    1.2.4. products must be of satisfactory quality, fit and safe for any purpose specified in, and conform in all material respects to, the product listing and any other description of the products supplied or made available by the seller to the buyer.
+                                                </li>
+                                                <li>
+                                                    1.2.5. the seller warrants that the seller has good title to, and is the sole legal and beneficial owner of, the products, and that the products are not subject to any third party rights or restrictions including in respect of third party intellectual property rights and/or any criminal, insolvency or tax investigation or proceedings.
+                                                </li>
+                                            </ul><br>
+                                            <p></p>
+                                        </div>
+                                        <div id="q5" style="margin:30px 15px">
+                                            <div class="question listformat">2. Payments </div>
+                                            <p class="txt">
+                                                2.1. You must make payments due under these general terms and conditions in accordance with the Payments Information and Guidelines on the marketplace. <br>
+                                            </p>
+                                        </div>
+                                        <div id="q6" style="margin:30px 15px">
+                                            <div class="question listformat">3. Store Credit </div>
+                                            <p class="txt">
+                                                3.1. Store Credits may be earned and managed in accordance with the WonderHaredware Store Credit Terms and Conditions, as may be amended from time to time.&nbsp;WonderHaredware reserves the right to cancel or withdraw WonderHaredware store credit rewards for any reason in its discretion, including if we suspect fraud or foul play. You can view Reward Store Credit terms and conditions on our website. <br>
+                                            </p>
+                                        </div>
+                                        <div id="q7" style="margin:30px 15px">
+                                            <div class="question listformat">3. Promotions </div>
+                                            <p class="txt">
+                                                3.1. Promotions and competitions run by WonderHaredware and/or other promoters shall be managed in accordance with the Promotions Terms and Conditions. You can view each Promotion's terms and conditions on our website. <br>
+                                            </p>
+                                        </div>
+                                        <div id="q8" style="margin:30px 15px">
+                                            <div class="question listformat">4. Data privacy </div>
+                                            <p class="txt">
+                                                4.1. Buyers agree to processing of their personal data in accordance with the terms of WonderHaredware’s Privacy and Cookie Notice. <br>
+                                                4.2. WonderHaredware shall process all personal data obtained through the marketplace and related services in accordance with the terms of our Privacy and Cookie Notice and Privacy Policy. <br>
+                                                4.3. Sellers shall be directly responsible to buyers for any misuse of their personal data and WonderHaredware shall bear no liability to buyers in respect of any misuse by sellers of their personal data. <br>
+                                            </p>
+                                        </div>
+
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        <button id="btnaccept" type="button" data-dismiss="modal" class="btn btn-primary">I've read and accept</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <button id="btnOrder" class="primary-btn btn-block order-submit" style="background-color:darkgray" disabled="">Place order</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="~/js/jquery.min.js"></script>
+    <script>
+        //Order from cart
+        var z = getItemStorage("Cart") || [];
+        var arr = [];
+        var avaialbleData = [];
+        var nonavaialbleData = [];
+        var dataArr = [];
+        var userArr;
+        $(document).ready(function () {
+            var html = '';
+            var totalprice = 0.00;
+            var totalproducts = 0;
+            //i is the Counter of Available Product
+            var i = 0,j=0;
+            if (z.length == 0) {
+                html += '<img src="/img/Index/download.png" style="border-radius: 50%;width: 100px;margin-left: auto;margin-right: auto;display: block;"/>';
+                html += '<br/><div style="text-align: center;display: block;"><strong>Your cart is empty</strong></div><br/>';
+                html += '<a class="primary-btn order-submit" href="/Home/Index" style="margin-left: auto;margin-right: auto;display: block;width: 55%;">Start Shopping</a>';
+                $('.dbody').html(html);
+            }
+            else {
+                $.ajax({
+                    type: "GET",
+                    url: "/Home/GetAvailableProducts",
+                    dataType: "json",
+                    success: function (result) {
+                        $.each(result, function (key, item) {
+                            avaialbleData[key] = item;
+                        });
+                        $.each(z, function (key, item) {
+                            if (avaialbleData[item.Code].isAvailable == "Available") {
+                                if (avaialbleData[item.Code].quantity > 0) {
+                                    arr[i] = { ProductCode: item.Code, ProductQuantity: item.Quantity, TotalPrice: (avaialbleData[item.Code].productPrice * item.Quantity) };
+                                    i++;
+                                    totalprice = totalprice + (item.Quantity * avaialbleData[item.Code].productPrice);
+                                    totalproducts = totalproducts + (item.Quantity * 1);
+
+                                    html += '<tr style="display: flex; justify-content: space-between;">';
+                                    html += '<th style="text-align: left;"><span style="color:#D10024;">' + item.Quantity + ' X </span>' + avaialbleData[item.Code].productName + '</th>';
+                                    html += '<th style="text-align: right;">' + (avaialbleData[item.Code].productPrice * item.Quantity) + '</th>';
+                                    html += '</tr>';
+                                    $('#ProductsDiv').html(html);
+                                }
+                                else {
+                                    nonavaialbleData[j] = { Code: item.Code, Quantity: item.Quantity };
+                                    j++;
+                                }
+
+                            }
+                        });
+                        $('#TPrice').html(totalprice);
+                        $('#TQuantity').html(totalproducts);
+                    }
+
+                });
+                
+            }
+            
+            //end order from cart
+
+            $("#have-account").click(function () {
+                $("#haveAccDiv").show(1000);
+                $("#createAccDiv").hide(1000);
+                $('#btnOrder').hide();
+                $('#divterms').hide();
+                ClearCreateAccDiv();
+            });
+            $("#create-account").click(function () {
+                $('#another-address').prop('checked', false);
+                $('#another-telephone').prop('checked', false);
+                $("#haveAccDiv").hide(1000);
+                $("#createAccDiv").show(1000);
+                $('#btnOrder').show();
+                $('#divterms').show();
+                ClearHaveAccDiv();
+            });
+            $('#btncheckAcc').click(function () {
+                HideAllValidations();
+                var telephone2 = $('#telephone2').val();
+                var password2 = $('#password2').val();
+                if (telephone2 == "" || telephone2 == undefined) {
+                    $('#validphone11').show();
+                }
+                if (password2 == "" || password2 == undefined) {
+                    $('#validpassword11').show();
+                }
+                else {
+                    $.ajax({
+                        type: "GET",
+                        url: "/Home/CheckAccount?Telephone=" + telephone2 + "&Password=" + password2,
+                        dataType: "json",
+                        success: function (result) {
+                            if (result == "failed phone") {
+                                $("#validphone12").show();
+                            }
+                            else if (result == "failed password") {
+                                $("#validpassword12").show();
+                            }
+                            else if (result["Address"] == null) {
+                                //account exist & must add address
+                                $('#btncheckAcc').hide();
+                                $('#checkedAccSuccess').show();
+                                $('#addAddress').show();
+                                $('#bigBlock').hide();
+                                $('#name2').text(result["Name"]);
+                                $('#phone2').text("0" + result["Phone"]);
+                                $('#btnOrder').show();
+                                $('#divterms').show();
+                                $('#inputHidden').val(parseInt(result["Id"]));
+                                GoTo(result);
+                            }
+                            else if (result == "failed phone&pass") {
+                                toastr.error('Phone or password is not correct or both!!', '', { timeOut: 7000 });
+                            }
+                            else {
+                                //account exist with old address
+                                $('#btncheckAcc').hide();
+                                $('#checkedAccSuccess').show();
+                                $('#checkedBefore').show();
+                                $('#bigBlock').hide();
+                                $('#addressOrNot').val(result["Address"]);
+                                $('#oldAddress').text(result["Address"]);
+                                $('#name1').text(result["Name"]);
+                                $('#phone').text("0"+result["Phone"]);
+                                $('#btnOrder').show();
+                                $('#divterms').show();
+                                $('#inputHidden').val(parseInt(result["Id"]));
+                                GoTo(result);
+                            }
+                            
+
+                        }
+                    });
+
+                }
+            });
+            $('#btnOrder').click(function () {
+                debugger;
+                HideAllValidations();
+                var fname = $('#fname').val();
+                var lname = $('#lname').val();
+                var telephone1 = $('#telephone1').val();
+                var password1 = $('#password1').val();
+                var city1 = $('#city1').val();
+                var address1 = $('#address1').val();
+                var telephone2 = $('#telephone2').val();
+                var password2 = $('#password2').val();
+                var city2 = $('#city2').val();
+                var address2 = $('#address2').val();
+                var city3 = $('#city3').val();
+                var address3 = $('#address3').val();
+                var city4 = $('#city4').val();
+                var address4 = $('#address4').val();
+                var city5 = $('#city5').val();
+                var address5 = $('#address5').val();
+                var AddressOrNot = $('#addressOrNot').val();
+                var userId = $('#inputHidden').val();
+
+                //login
+                if (telephone2 == "" || telephone2 == undefined) {
+                    $('#validphone11').show();
+                }
+                if (password2 == "" || password2 == undefined) {
+                    $('#validpassword11').show();
+                }
+                //end
+
+                //start create account
+                if (fname == "" || fname == undefined) {
+                    $('#validfname').show();
+                }
+                if (lname == "" || lname == undefined) {
+                    $('#validlname').show();
+                }
+                if (telephone1 == "" || telephone1 == undefined) {
+                    $('#validphone21').show();
+                }
+                if (password1 == "" || password1 == undefined) {
+                    $('#validpassword21').show();
+                }
+                if (city1 == "" || city1 == undefined) {
+                    $('#validcity21').show();
+                }
+                if (address1 == "" || address1 == undefined) {
+                    $('#validaddress21').show();
+                }
+
+                //end
+
+                //start write address if it's logined in
+                if (city4 == "" || city4 == undefined) {
+                    $('#validcity4').show();
+                }
+                if (address4 == "" || address4 == undefined) {
+                    $('#validaddress4').show();
+                }
+                //end
+                if (city5 == "" || city5 == undefined) {
+                    $('#validcity5').show();
+                }
+                if (address5 == "" || address5 == undefined) {
+                    $('#validaddress5').show();
+                }
+
+                if ((city3 == "" && address3 == "") || ((city3 != "" && city3 != undefined) && (address3 != "" && address3 != undefined))) {
+                    //write new address (there is old address in sales table) while already signed in-->(if variables is null go and get the old address)
+                    $.each(arr, function (key, item) {
+                        dataArr[key] = { City: city3, Address: address3, ProductCode: item.ProductCode, UserID: userId, ProductQuantity: item.ProductQuantity, TotalPrice: item.TotalPrice };
+                    });
+                    $.ajax({
+                        type: "POST",
+                        url: "/Home/CheckOut",
+                        data: { OrderData: dataArr },
+                        dataType: "json",
+                        success: function (result) {
+                            if (result == "success checked new address") {
+                                toastr.success('Order checked successfully at the address you entered.', '', { timeOut: 7000 });
+                                $.each(z, function (key, item) {
+                                    removeItemStorage("Cart", 0);
+                                });
+                                var cart = getItemStorage("Cart") || [];
+                                setItemStorage("Cart", cart);
+                                $.each(nonavaialbleData, function (key, item) {
+                                    addValueToItemStorage("Cart", item);
+                                });
+
+                                window.location = "/Home/Index"
+                            }
+                            else if (result == "success checked old address") {
+                                toastr.success('Order checked successfully at the same address checked before.', '', { timeOut: 7000 });
+                                $.each(z, function (key, item) {
+                                    removeItemStorage("Cart", 0);
+                                });
+                                var cart = getItemStorage("Cart") || [];
+                                setItemStorage("Cart", cart);
+                                $.each(nonavaialbleData, function (key, item) {
+                                    addValueToItemStorage("Cart", item);
+                                });
+
+                                window.location = "/Home/Index"
+                            }
+
+                        }
+                    });
+                }
+
+                else if ((city4 != "" && city4 != undefined) && (address4 != "" && address4 != undefined)) {
+                    //write new address for the first time while already signed in-->(add address)
+                    $.each(arr, function (key, item) {
+                        dataArr[key] = { City: city4, Address: address4, ProductCode: item.ProductCode, UserID: userId, ProductQuantity: item.ProductQuantity, TotalPrice: item.TotalPrice };
+
+                    });
+                    $.ajax({
+                        type: "POST",
+                        url: "/Home/CheckOut",
+                        data: { OrderData: dataArr },
+                        dataType: "json",
+                        success: function (result) {
+                            if (result == "success checked new address") {
+                                toastr.success('Order checked successfully at the address you entered.', '', { timeOut: 7000 });
+                                $.each(z, function (key, item) {
+                                    removeItemStorage("Cart", 0);
+                                });
+                                var cart = getItemStorage("Cart") || [];
+                                setItemStorage("Cart", cart);
+                                $.each(nonavaialbleData, function (key, item) {
+                                    addValueToItemStorage("Cart", item);
+                                });
+                                window.location = "/Home/Index"
+                            }
+                        }
+                    });
+                }
+               else if (telephone1 == ""  && telephone2 == ""  && password1 == "" && password2 == ""  && city1 == "" && city2 == "" && address1 == "" && address2 == "" && fname == ""  && lname == "") {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Please log in or Create a new account !!',
+                        showConfirmButton: false,
+                        timer: 3000
+                    })
+                }
+                else if (telephone2 == "" && password2 == "" && city2 == "" && address2 == "" && fname != "" && lname != "" && telephone1 != "" && password1 != "" && city1 != "" && address1 != "") {
+                    //create Account
+                    $.each(arr, function (key, item) {
+                        dataArr[key] = { City: city1, Address: address1, ProductCode: item.ProductCode, ProductQuantity: item.ProductQuantity, TotalPrice: item.TotalPrice };
+                    });
+                    userArr = { FName: fname, LName: lname, Password: password1, Telephone: telephone1 }
+                    $.ajax({
+                        type: "POST",
+                        url: "/Home/CheckOut",
+                        data: { UserData: userArr, OrderData: dataArr },
+                        datatype: "json",
+                        success: function (result) {
+                            if (result == "success") {
+                                toastr.success('Account has been created & Order checked successfully.', '', { timeOut: 7000 });
+                                $.each(z, function (key, item) {
+                                    removeItemStorage("Cart", 0);
+                                });
+                                var cart = getItemStorage("Cart") || [];
+                                setItemStorage("Cart", cart);
+                                $.each(nonavaialbleData, function (key, item) {
+                                    addValueToItemStorage("Cart", item);
+                                });
+                                window.location = "/Home/Index"
+                            }
+                            else if (result == "This phone is already exist") {
+                                $("#validphone22").show();
+                            }
+
+                        }
+                    });
+                }
+                else if ((telephone2 != "" && password2 != "" && fname == "" && lname == "" && telephone1 == "" && password1 == "" && city1 == "" && address1 == "" && city5 != "" && address5 != "" && city2 == "" && address2 == "" && AddressOrNot == "") || (telephone2 != "" && password2 != "" && fname == "" && lname == "" && telephone1 == "" && password1 == "" && city1 == "" && address1 == "" && city5 == "" && address5 == "" && AddressOrNot != "" ) ) {
+                    //already have Account
+                    if (city2 == "") {
+                        // هاحد الادرس القديم ف الوندر<-- لو مضفتش ادرس جديد
+                        $.each(arr, function (key, item) {
+                            dataArr[key] = { City: city5, Address: address5, ProductCode: item.ProductCode, ProductQuantity: item.ProductQuantity, TotalPrice: item.TotalPrice };
+                        });
+                    }
+                    else {
+                        $.each(arr, function (key, item) {
+                            dataArr[key] = { City: city2, Address: address2, ProductCode: item.ProductCode, ProductQuantity: item.ProductQuantity, TotalPrice: item.TotalPrice };
+                        });
+                    }
+                    userArr = { Telephone: telephone2, Password: password2 }
+                    $.ajax({
+                        type: "POST",
+                        url: "/Home/CheckOut",
+                        data: { OrderData: dataArr },
+                        dataType: "json",
+                        success: function (result) {
+                            if (result == "success checked new address") {
+                                toastr.success('Order checked successfully at the address you entered.', '', { timeOut: 7000 });
+                                $.each(z, function (key, item) {
+                                    removeItemStorage("Cart", 0);
+                                });
+                                var cart = getItemStorage("Cart") || [];
+                                setItemStorage("Cart", cart);
+                                $.each(nonavaialbleData, function (key, item) {
+                                    addValueToItemStorage("Cart", item);
+                                });
+                                window.location = "/Home/Index"
+                            }
+                            else if (result == "success checked old address") {
+                                toastr.success('Order checked successfully at the same address checked before.', '', { timeOut: 7000 });
+                                $.each(z, function (key, item) {
+                                    removeItemStorage("Cart", 0);
+                                });
+                                var cart = getItemStorage("Cart") || [];
+                                setItemStorage("Cart", cart);
+                                $.each(nonavaialbleData, function (key, item) {
+                                    addValueToItemStorage("Cart", item);
+                                });
+                                window.location = "/Home/Index"
+                            }
+                            else if (result == "failed phone") {
+                                $("#validphone12").show();
+                            }
+                            else if (result == "failed password") {
+                                $("#validpassword12").show();
+                            }
+                            else if (result == "failed phone&pass") {
+                                toastr.error('Phone or password is not correct or both!!', '', { timeOut: 7000 });
+                            }
+                        }
+                    });
+                }
+                
+            });
+            $('#terms').click(function () {
+                if ($("#btnOrder").is(':disabled')) {
+                    $("#btnOrder").removeAttr('disabled');
+                    $("#btnOrder").css('background-color', '#D10024');
+                }
+                else {
+                    $("#btnOrder").attr('disabled', 'disabled');
+                    $("#btnOrder").css('background-color', 'darkgray');
+                    $("#terms").removeAttr('checked');
+                }
+            });
+            $('#btnaccept').click(function () {
+                if ($("#btnOrder").is(':disabled')) {
+                    $('#terms').prop('checked', true);
+                    $("#btnOrder").removeAttr('disabled');
+                    $("#btnOrder").css('background-color', '#D10024');
+
+                }
+
+
+            });
+        });
+        function HideAllValidations() {
+            //start login
+            $('#validphone11').hide();
+            $('#validpassword11').hide();
+            $('#validphone12').hide();
+            $('#validpassword12').hide();
+            //end
+
+            //start create account
+            $('#validfname').hide();
+            $('#validlname').hide();
+            $('#validphone21').hide();
+            $('#validphone22').hide();
+            $('#validpassword21').hide();
+            $('#validcity21').hide();
+            $('#validaddress21').hide();
+            //end
+
+            //start write address if it's logined in
+            $('#validcity4').hide();
+            $('#validaddress4').hide();
+            //end
+            $('#validcity5').hide();
+            $('#validaddress5').hide();
+
+        }
+        function ClearCreateAccDiv() {
+            setTimeout(function () {
+                $('#fname').val('');
+                $('#lname').val('');
+                $('#address1').val('');
+                $('#city1').val('');
+                $('#telephone1').val('');
+                $('#password1').val('');
+            }, 1000);
+            //start login
+            $('#validphone11').hide();
+            $('#validpassword11').hide();
+            $('#validphone12').hide();
+            $('#validpassword12').hide();
+            //end login
+
+            //start create account
+            $('#validfname').hide();
+            $('#validlname').hide();
+            $('#validphone21').hide();
+            $('#validphone22').hide();
+            $('#validpassword21').hide();
+            //end create account
+        }
+        function ClearHaveAccDiv() {
+            setTimeout(function () {
+                $('#password2').val('');
+                $('#address2').val('');
+                $('#city2').val('');
+                $('#telephone2').val('');
+            }, 1000);
+            //start login
+            $('#validphone11').hide();
+            $('#validpassword11').hide();
+            $('#validphone12').hide();
+            $('#validpassword12').hide();
+            //end login
+
+            //start create account
+            $('#validfname').hide();
+            $('#validlname').hide();
+            $('#validphone21').hide();
+            $('#validphone22').hide();
+            $('#validpassword21').hide();
+            //end create account
+        }
+
+        function setItemStorage(itemKey, itemValue) {
+            localStorage.setItem(itemKey, JSON.stringify(itemValue));
+        }
+        function getItemStorage(itemKey) {
+            return JSON.parse(localStorage.getItem(itemKey));
+        }
+        function removeItemStorage(itemKey, val) {
+            let item = getItemStorage(itemKey);
+            item.splice(val, 1);
+            setItemStorage(itemKey, item);
+        }
+    </script>
+</body>
+</html>

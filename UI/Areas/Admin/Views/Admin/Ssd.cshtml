@@ -1,0 +1,214 @@
+﻿@{
+    ViewData["Title"] = "Ssd";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+<div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-body" style="border:none;">
+                <div style="border-bottom: 1px solid #dedcdc; padding-bottom: 2%;">
+                    <span id="codeheader">
+
+                    </span>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div id="Data" style="margin-top: 20px;">
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="updatebtn" class="btn btn-success" data-dismiss="modal" style="margin:auto">Update</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+<input hidden id="hiddeninput" />
+<div class="content" style="background: #f1f2f7;">
+    <div class="breadcrumbs">
+        <div class="breadcrumbs-inner">
+            <div class="row m-0">
+                <div class="col-sm-4">
+                    <div class="page-header float-left">
+                        <div class="page-title">
+                            <h1>Dashboard</h1>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-8">
+                    <div class="page-header float-right">
+                        <div class="page-title">
+                            <ol class="breadcrumb text-right">
+                                <li><a href="/Admin/Admin/Index">Dashboard</a></li>
+                                <li class="active"> SSD </li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="animated fadeIn">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header" style=" display: flex; justify-content: space-between;">
+                            <strong class="card-title">SSD Table</strong>
+                            <a href="/Admin/Admin/CreateSsd" type="button" class="btn btn-outline-info">+</a>
+                        </div>
+                        <div class="card-body">
+                            <table id="tblSsd" class="table table-striped table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Code</th>
+                                        <th>Name</th>
+                                        <th>Brand</th>
+                                        <th>Price</th>
+                                        <th>Quantity</th>
+                                        <th>Size(GB)</th>
+                                        <th>Interface</th>
+                                        <th>Images</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div><!-- .animated -->
+    </div><!-- .content -->
+</div>
+<script src="~/js/jquery.min.js"></script>
+<script type="text/javascript">
+    $(function () {
+        $.ajax({
+            type: "POST",
+            url: "/Admin/Admin/SsdData",
+            data: '{}',
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: OnSuccess,
+            failure: function (response) {
+                alert(response.d);
+            },
+            error: function (response) {
+                alert(response.d);
+            }
+        });
+    });
+    $(document).ready(function () {
+
+        var AddUpdateSsd = getItemStorage('AddUpdateSsd');
+
+        if (AddUpdateSsd == "Add") {
+            toastr.success('New SSD is added successfully.', '', { timeOut: 7000 });
+            removeStorage('AddUpdateSsd');
+        }
+        else if (AddUpdateSsd == "Update") {
+            toastr.success('Update done successfully.', '', { timeOut: 7000 });
+            removeStorage('AddUpdateSsd');
+        }
+
+        $("#updatebtn").click(function () {
+            var code = $("#hiddeninput").val();
+            window.location.href = "/Admin/Admin/UpdateSsd?code=" + code;
+        });
+    });
+    function OnSuccess(response) {
+        var table = $("#tblSsd").DataTable(
+            {
+                bLengthChange: true,
+                lengthMenu: [[10, 20, 50, -1], [10, 20, 50, "All"]],
+                bFilter: true,
+                bSort: true,
+                bPaginate: true,
+                data: response,
+                columns: [{ title: 'Code', 'data': 'ssdcode', className: 'vertical' },
+                { title: 'Name', 'data': 'ssdname', className: 'vertical' },
+                { title: 'Brand', 'data': 'brandName', className: 'vertical' },
+                { title: 'Price', 'data': 'ssdprice', className: 'vertical' },
+                { title: 'Quantity', 'data': 'ssdquantity', className: 'vertical' },
+                { title: 'Size(GB)', 'data': 'ssdsize', className: 'vertical' },
+                { title: 'Interface', 'data': 'ssdinterface', className: 'vertical' },
+                {
+                    orderable: false, data: null, defaultContent: '', className: ' vertical',
+                    "render": function (data, type, full, meta) {
+                        return '<a onclick="GetImages(' + "'" + full.ssdcode + "'" + ')" data-toggle="modal" data-target="#myModal" style="margin-left: 5px; margin-right: 5px;cursor:pointer;"><i style="color:darkblue; font-size:large;" class="fa-solid fa-camera-retro"></i></a>';
+                    }
+                }, {
+                    orderable: false, data: null, defaultContent: '', className: 'options vertical',
+                    "render": function (data, type, full, meta) {
+                        return '<a style="cursor:pointer" class="options"><i class="fa-solid fa-ellipsis-vertical"></i></a> ';
+                    }
+                }]
+
+            }); $('#tblSsd tbody').on('click', 'td.options', function () {
+                var tr = $(this).closest('tr');
+                var row = table.row(tr);
+                var height = tr.height();
+                if (tr.is(':has(div)') == false) {
+                    // Open this row
+                    removeOptions();
+                    $(format(row.data())).appendTo(tr).hide();
+                    $('tbody').find('.fontawesomevertical').css('height', height).css('padding', height / 3).show(1000);
+                }
+                else {
+                    // This row is already open - close it
+                    $('tbody').find('.fontawesomevertical').hide(1000).delay(1000).queue(function () {
+                        removeOptions();
+                    });
+                }
+            });
+    };
+    function removeOptions() {
+        $('tbody').find('.fontawesomevertical').remove();
+    }
+    function format(d) {
+        return (
+            '<div class="fontawesomevertical" style="position: absolute;display: flex;transform: translateX(3px);background-color: #dddcdc;border-radius: 8px;">' +
+            '<a href="/Admin/Admin/ProductReviews?code=' + d.ssdcode + '"><i style="color:green; font-size:large;" class="fa fa-solid fa-message"></i></a>  <a href="/Admin/Admin/UpdateSsd?code=' + d.ssdcode + '" style="margin-left: 5px; margin-right: 5px;"><i style="color:darkblue; font-size:large;" class="fa fa-solid fa-pen-to-square"></i></a>  <a href="/Admin/Admin/DeleteSsd?code=' + d.ssdcode + '"><i style="color:red; font-size:large;" class="fa fa-solid fa-trash-can"></i></a>' +
+            '</div>'
+        );
+    }
+    // To Get Images for Product..
+    function GetImages(code) {
+        debugger;
+        var $val = '';
+        var $val2 = '';
+        $.ajax({
+            url: "/Admin/Images?Code=" + code,
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                debugger;
+                console.log(data.length)
+                $("#Data").empty();
+                $("#hiddeninput").val(code);
+                $val2 += code;
+                $val += '<div style="display:flex;justify-content: center;place-content: space-evenly;">'
+                if (data.length == 0) {
+                    $val += 'No images for this product';
+                }
+                else {
+                    for (var img of data) {
+                        $val += '<img style="max-width: 140px;max-height:140px;min-height:140px;min-width: 140px;" class="img-responsive img-thumbnail" src="/Images/' + img + '" alt="Product Image" style="width:30%;"> ';
+                    }
+                }
+
+                $val += '</div>'
+                $("#Data").html($val);
+                $("#codeheader").html($val2);
+
+            }
+        });
+    }
+</script>
+

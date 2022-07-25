@@ -1,0 +1,517 @@
+﻿@model IEnumerable<BLL.ViewModel.ChatVM>
+@{
+    ViewBag.Title = "Contact Us";
+
+    var UserID = ViewBag.userid;
+}
+
+<style>
+    body {
+        background-color: #f4f7f6;
+    }
+
+    .card {
+        background: #fff;
+        transition: .5s;
+        border: 0;
+        margin-bottom: 30px;
+        border-radius: .55rem;
+        position: relative;
+        width: 100%;
+        box-shadow: 0 1px 2px 0 rgb(0 0 0 / 10%);
+    }
+
+    .chat-app .people-list {
+        width: 280px;
+        position: absolute;
+        left: 0;
+        top: 0;
+        padding: 20px;
+        z-index: 7
+    }
+
+    .chat-app .chat {
+        border-left: 1px solid #eaeaea
+    }
+
+    .people-list {
+        -moz-transition: .5s;
+        -o-transition: .5s;
+        -webkit-transition: .5s;
+        transition: .5s
+    }
+
+        .people-list .chat-list li {
+            padding: 10px 15px;
+            list-style: none;
+            border-radius: 3px
+        }
+
+            .people-list .chat-list li:hover {
+                background: #efefef;
+                cursor: pointer
+            }
+
+            .people-list .chat-list li.active {
+                background: #efefef
+            }
+
+            .people-list .chat-list li .name {
+                font-size: 15px
+            }
+
+        .people-list .chat-list img {
+            width: 45px;
+            border-radius: 50%
+        }
+
+        .people-list img {
+            float: left;
+            border-radius: 50%
+        }
+
+        .people-list .about {
+            float: left;
+            padding-left: 8px
+        }
+
+        .people-list .status {
+            color: #999;
+            font-size: 13px
+        }
+
+    .chat .chat-header {
+        padding: 15px 20px;
+        border-bottom: 2px solid #f4f7f6
+    }
+
+        .chat .chat-header img {
+            float: left;
+            border-radius: 40px;
+            width: 40px
+        }
+
+        .chat .chat-header .chat-about {
+            float: left;
+            padding-left: 10px
+        }
+
+    .chat .chat-history {
+        padding-left: 20px;
+        padding-right: 20px;
+        border-bottom: 2px solid #f4f7f6;
+    }
+
+        .chat .chat-history ul {
+            padding: 0
+        }
+
+            .chat .chat-history ul li {
+                list-style: none;
+                margin-bottom: 30px
+            }
+
+
+        .chat .chat-history .message-data {
+            margin-bottom: 15px
+        }
+
+            .chat .chat-history .message-data img {
+                border-radius: 40px;
+                width: 40px
+            }
+
+        .chat .chat-history .message-data-time {
+            color: #434651;
+            padding-left: 6px
+        }
+
+        .chat .chat-history .message {
+            color: #444;
+            padding: 18px 20px;
+            line-height: 26px;
+            font-size: 16px;
+            border-radius: 7px;
+            display: inline-block;
+            position: relative
+        }
+
+
+
+        .chat .chat-history .my-message {
+            background: #efefef
+        }
+
+
+
+        .chat .chat-history .other-message {
+            background: #e8f1f3;
+            text-align: right
+        }
+
+
+
+    .chat .chat-message {
+        padding: 20px
+    }
+
+    .online,
+    .offline,
+    .me {
+        margin-right: 2px;
+        font-size: 8px;
+        vertical-align: middle
+    }
+
+    .online {
+        color: #86c541
+    }
+
+    .offline {
+        color: #e47297
+    }
+
+    .me {
+        color: #1d8ecd
+    }
+
+    .float-right {
+        float: right
+    }
+    /*    not in admin chat   */
+    .input-group-text {
+        display: -ms-flexbox;
+        display: flex;
+        -ms-flex-align: center;
+        align-items: center;
+        padding: 0.375rem 0.75rem;
+        margin-bottom: 0;
+        font-size: 1rem;
+        font-weight: 400;
+        line-height: 1.5;
+        color: #495057;
+        text-align: center;
+        white-space: nowrap;
+        background-color: #e9ecef;
+        border: 1px solid #ced4da;
+        border-radius: 0.25rem;
+    }
+
+    .input-group-prepend {
+        display: flex;
+    }
+
+    .input-group-prepend {
+        margin-right: -1px;
+    }
+
+    .input-group {
+        position: relative;
+        display: -ms-flexbox;
+        display: flex;
+        -ms-flex-wrap: wrap;
+        flex-wrap: wrap;
+        -ms-flex-align: stretch;
+        align-items: stretch;
+        width: 100%;
+    }
+
+        .input-group > .form-control {
+            position: relative;
+            -ms-flex: 1 1 auto;
+            flex: 1 1 auto;
+            width: 1%;
+            margin-bottom: 0;
+        }
+
+    .form-control {
+        display: block;
+        width: 100%;
+        height: calc(2.25rem + 27px);
+        padding: 0.375rem 0.75rem;
+        font-size: 14px;
+        line-height: 1.5;
+        color: #495057;
+        background-color: #fff;
+        background-clip: padding-box;
+        border: 1px solid #ced4da;
+        border-radius: 0.25rem;
+        transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    }
+    /*    not in admin chat   */
+
+
+    .gfg {
+        margin: 4px, 4px;
+        padding: 4px;
+        height: 59vh;
+        overflow-x: hidden;
+        overflow-y: auto;
+        text-align: justify;
+        margin-right: -11px;
+    }
+
+    .circle {
+        position: absolute;
+        left: -4px;
+        bottom: 21px;
+        width: 20px;
+        height: 20px;
+        line-height: 20px;
+        text-align: center;
+        border-radius: 50%;
+        font-size: 10px;
+        color: #FFF;
+        background-color: #D10024;
+    }
+
+    .dateShape {
+        color: #999;
+        font-size: 13px;
+    }
+    .spancheck {
+        left: 10px;
+        position: relative;
+        color: #feffff;
+    }
+</style>
+
+<div class="container">
+    <div class="row clearfix" style=" display: flex; justify-content: center;">
+        <div style="position: unset; width: 717px;">
+            <div class="card chat-app">
+                <div id="messagearea" class="chat">
+                    <div id="messageList">
+                        <div class="chat-header clearfix">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="chat-about">
+                                        <h6 class="m-b-0">
+                                        </h6>
+                                        <small>Customers Service</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="chat-history" style="position: relative;">
+                            <ul id="newMessage" style="margin-bottom: 0rem;" class="m-b-0 gfg">
+                                @if (Model.Count() == 0)
+                                {
+                                    <li id="nomessages" class="chat row" style="display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center ">
+                                        <img src="~/ElaAdmin-master/ElaAdmin-master/images/messages3.jpg" />
+                                        <h4>
+                                            Write your question and we will reply as soon as possible.
+                                        </h4>
+                                    </li>
+                                    <li hidden id="LastDate">0</li>
+                                }
+                                else
+                                {
+                                    for (var i = 0; i < Model.Count(); i++)
+                                    {
+                                        // هنبعت من الكنترول علشان الديت وهنعمل انبوت هيدن للبرفيس ديت
+                                        if (i != 0)
+                                        {
+                                            if (Model.ElementAt(i).Date != Model.ElementAt(i - 1).Date)
+                                            {
+                                                <li class="dateShape" style="text-align:center">@Model.ElementAt(i).Date </li>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <li class="dateShape" style="text-align:center">@Model.ElementAt(i).Date </li>
+                                        }
+                                        if (Model.ElementAt(i).AdminOrNot == true)
+                                        {
+                                            <li class="clearfix" style="margin-right: 10%; ">
+                                                <div class="message other-message" style="position: unset; word-break: break-word;">
+                                                    @Model.ElementAt(i).MessageText
+                                                    <br />
+                                                    <span style="font-size: xx-small;">@Model.ElementAt(i).Time</span>
+                                                </div>
+                                            </li>
+                                        }
+                                        else
+                                        {
+                                            <li class="clearfix" style="margin-right: 19px; margin-left: 10%; ">
+                                                <div style=" background: #D10024; color: white; word-break: break-word;" class="message my-message float-right">
+                                                    @Model.ElementAt(i).MessageText
+                                                    <br />
+                                                    <span style="font-size: xx-small;">
+                                                        @Model.ElementAt(i).Time
+                                                    </span>
+                                                    <span class="spancheck"><i class="fa fa-light fa-check"></i></span>
+                                                </div>
+                                            </li>
+                                        }
+                                        if (i == Model.Count()-1)
+                                        {
+                                            <li hidden id="LastDate">@Model.ElementAt(i).Date</li>
+                                        }
+                                    }
+
+                                }
+                            </ul>
+                            <span onclick="GoBottom()" style="display: none;cursor:pointer; bottom: -1px; position: absolute;" id="notseenCounterangle"><span id="notseenCounter"></span><i style="font-size: 21px;" class="fa fa-solid fa-angle-down"></i></span>
+                        </div>
+                    </div>
+                    <div class="chat-message clearfix">
+                        <div class="input-group mb-0">
+                            <div id="sendButton" style="pointer-events:none" class="input-group-prepend">
+                                <span class="input-group-text"><i class="fa fa-send" style="font-size: large;"></i></span>
+                            </div>
+                            <input type="text" id="msg" class="form-control" placeholder="Enter text here...">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="~/js/signalr/dist/browser/signalr.js"></script>
+<script src="~/js/jquery.min.js"></script>
+
+<script>
+    "use strict";
+    var connection = new signalR.HubConnectionBuilder().withUrl("/chatHub").build();
+    var userId =@UserID; //احط هنا الشخص اللي فاتح من خلال السيشن و مش هستخدم الفانكشن الاخيره اللي بتحط الاسم
+    var previousDate = $("#LastDate").text();
+    $(document).ready(function () {
+        document.getElementById("newMessage").scrollTop = document.getElementById("newMessage").scrollHeight;
+        $('#msg').keyup(function () {
+            //لما اكتب ماسدج اولها او اخرها مسافه بيهملها
+            if ($.trim($('#msg').val()) != "") {
+                $("#sendButton").css('pointer-events', '');
+            }
+            else if ($.trim($('#msg').val()) == "") {
+                $("#sendButton").css('pointer-events', 'none');
+            }
+        });
+        Seen(userId);
+    });
+    var MsgCounter = 0;
+    var y = 0;
+    var m = 0;
+
+    connection.on("ReceiveMessage", function (message, txt, senderid, userid, dictionaryDandT) {
+        $('#nomessages').hide();
+        var html = '';
+        //var msg = message.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");  بيحول الرموز لحجات تانيه
+        if (senderid == userId || userid == userId) {
+            if (dictionaryDandT["Date"] != previousDate) {
+                // مقارنه للتاريخ الجاي والتاريخ اللي قبله عشان الماسدجات تبقا كلها متجمعه تحت تاريخ واحد
+                html += '<li class="dateShape" style="text-align:center">' + dictionaryDandT["Date"] + '</li>';
+                previousDate = dictionaryDandT["Date"];
+            }
+            if (txt == "My text as user") {
+               
+                html += '<li class="clearfix" style="margin-right: 19px; margin-left: 10%; ">';
+                html += '<div class="message my-message float-right" style="background: #D10024; color: white;word-break: break-word; ">';
+                html += message;
+                html += '</br><span style="font-size: xx-small;" >';
+                html += dictionaryDandT["Time"];
+                html += '</span><span class="spancheck"><i class="fa fa-light fa-check"></i></span></div></li>';
+
+                $("#newMessage").append(html);
+                document.getElementById("newMessage").scrollTop = document.getElementById("newMessage").scrollHeight;
+
+            }
+            else {
+                
+                html += '<li class="clearfix" style="margin-right: 10%; ">';
+                html += '<div class="message other-message" style="position: unset; word-break: break-word;">';
+                html += message;
+                html += '</br><span style="font-size: xx-small;" >';
+                html += dictionaryDandT["Time"];
+                html += '</span></div></li>';
+
+
+                var x = document.getElementById("newMessage").scrollHeight - (document.getElementById("newMessage").clientHeight + document.getElementById("newMessage").scrollTop);
+                //الجزء المتبقي من اخر مانا واقفه لتحت قبل ما الماسدج الجديده تتحط
+                m = document.getElementById("newMessage").clientHeight + document.getElementById("newMessage").scrollTop;
+                //الجزء من اخر مانا واقفه لحد فوق خالص
+
+                $("#newMessage").append(html);
+
+                if (x != 0) {
+                    //لو مش واقفه في اخر الماسدجات و اليوزر بعت ماسدج جديده عوزاه يعملي نوتفكيشن انه في ماسدج جديده تحت ومينزلش عليها
+                    MsgCounter++;
+                    y += document.getElementById("newMessage").scrollHeight - (x + m);
+                    //جزء الماسدجات اللي معملتلهاش سين
+
+                    //not seen counter in chat
+                    var html2 = '<i class="circle">' + MsgCounter + '</i>';
+                    $("#notseenCounter").html(html2);
+                    $("#notseenCounterangle").css('display', 'inline');
+                }
+                else {
+                    //لو واقفه في اخر الماسدجات و اليوزر بعت ماسدج جديده عوزاه يفضل ف اخر الماسدجات وينزل مع الجديده اللي بتيجي
+                    document.getElementById("newMessage").scrollTop = document.getElementById("newMessage").scrollHeight;
+                    y = 0;
+                    MsgCounter = 0;
+                }
+            }
+        }
+
+    });
+
+    $("#newMessage").scroll(function () {
+        var winBottom = document.getElementById("newMessage").scrollTop + document.getElementById("newMessage").clientHeight;
+
+        if ((winBottom <= (document.getElementById("newMessage").scrollHeight - y)) && (y != 0)) {
+            //message not seen
+            //not seen counter in chat
+            var html2 = '<i class="circle">' + MsgCounter + '</i>';
+            $("#notseenCounter").html(html2);
+            $("#notseenCounterangle").css('display', 'inline');
+
+        }
+        else if ((winBottom > (document.getElementById("newMessage").scrollHeight - y)) || MsgCounter == 0) {
+            //message seen
+            y = 0;
+            MsgCounter = 0;
+            $("#notseenCounterangle").css('display', 'none');
+            Seen(userId);
+        }
+    });
+
+    connection.start().then(function () {
+        document.getElementById("sendButton").disabled = false;
+    }).catch(function (arr) {
+        return console.error(arr.toString());
+    });
+
+    document.getElementById("sendButton").addEventListener("click", function (event) {
+        var message = $.trim(document.getElementById("msg").value);
+        var to = "To Admin";
+        if (message == "") {
+            $("#sendButton").css('pointer-events', 'none');
+        }
+        else {
+            connection.invoke("SendMessage", userId, message, to, 0).then(function () {
+                document.getElementById("msg").value = "";
+            }).catch(function (arr) {
+                return console.error(arr.toString());
+            });
+            event.preventDefault();
+        }
+    });
+
+    function GoBottom() {
+        document.getElementById("newMessage").scrollTop = document.getElementById("newMessage").scrollHeight;
+    }
+    function Seen(uid) {
+        $.ajax({
+            url: "/Home/SeeMessages?userid=" + uid ,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (result) {
+                GetMessagesCounterinuser("");
+            }
+        });
+    }
+</script>
+
+
+

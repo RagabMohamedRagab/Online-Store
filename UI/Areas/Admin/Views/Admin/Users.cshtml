@@ -1,0 +1,120 @@
+﻿@{
+    ViewData["Title"] = "Users";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<div class="content" style="background: #f1f2f7;">
+    <div class="breadcrumbs">
+        <div class="breadcrumbs-inner">
+            <div class="row m-0">
+                <div class="col-sm-4">
+                    <div class="page-header float-left">
+                        <div class="page-title">
+                            <h1>Dashboard</h1>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-8">
+                    <div class="page-header float-right">
+                        <div class="page-title">
+                            <ol class="breadcrumb text-right">
+                                <li><a href="/Admin/Admin/Index">Dashboard</a></li>
+                                <li class="active"> Users </li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="animated fadeIn">
+            <div class="row">
+
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <strong class="card-title">Users Table</strong>
+                        </div>
+                        <div class="card-body">
+                            <table id="tblUsers" class="table table-striped table-bordered">
+                                
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div><!-- .animated -->
+    </div><!-- .content -->
+</div>
+
+<script src="~/js/jquery.min.js"></script>
+<script type="text/javascript">
+
+  
+    $(function () {
+        $.ajax({
+            type: "POST",
+            url: "/Admin/Admin/UsersData",
+            data: '{}',
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: OnSuccess,
+            failure: function (response) {
+                alert(response.d);
+            },
+            error: function (response) {
+                alert(response.d);
+            }
+        });
+    });
+    function OnSuccess(response) {
+        $("#tblUsers").DataTable(
+            {
+                bLengthChange: true,
+                lengthMenu: [[10, 20, 50, -1], [10, 20,50, "All"]],
+                bFilter: true,
+                bSort: true,
+                bPaginate: true,
+                data: response,
+                columns: [{ title: 'ID', 'data': 'id', className: 'vertical' },
+                    { title: 'Name', 'data': 'name', className: 'vertical' },
+                    {
+                        title: 'Phone', 'data': 'telephone', className: 'vertical',
+                        "render": function (data, type, row) {
+                            return "0"+row.telephone;
+                        }
+                    },
+                    { title: 'Password', 'data': 'password', className: 'vertical' },
+                    {
+                        title: 'Latest Buy Time', 'data': 'latestBuyTime', className: 'vertical',
+                        "render": function (data, type, row) {
+
+                            if (row.latestBuyTime === null) {
+                                return "_";
+                            }
+                            else {
+                                return row.latestBuyTime;
+                            }
+                        }
+                    },
+                    {
+                        title: 'Number Of Times', 'data': 'numberOfTimes', className: 'vertical',
+                        "render": function (data, type, row) {
+
+                            if (row.numberOfTimes === 0) {
+                                return "_";
+                            }
+                            else {
+                                return row.numberOfTimes;
+                            }
+                        }
+                    }]
+            });
+    };
+</script>
+
+

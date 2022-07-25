@@ -1,0 +1,153 @@
+﻿@model string[];
+@{
+    ViewData["Title"] = "Users";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+<input hidden id="code" value="@Model[0]">
+<div class="content" style="background: #f1f2f7;">
+    <div class="breadcrumbs">
+        <div class="breadcrumbs-inner">
+            <div class="row m-0">
+                <div class="col-sm-4">
+                    <div class="page-header float-left">
+                        <div class="page-title">
+                            <h1>Dashboard</h1>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-8">
+                    <div class="page-header float-right">
+                        <div class="page-title">
+                            <ol class="breadcrumb text-right">
+                                <li><a href="/Admin/Admin/Index">Dashboard</a></li>
+                                <li class="active"> @Model[1] </li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="animated fadeIn">
+            <div class="row">
+
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <strong class="card-title">@Model[1] Reviews</strong>
+                        </div>
+                        <div class="card-body">
+                            <table id="tblreviews" class="table table-striped table-bordered">
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div><!-- .animated -->
+    </div><!-- .content -->
+</div>
+
+<script src="~/js/jquery.min.js"></script>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $.ajax({
+            type: "POST",
+            url: "/Admin/Admin/ReviewsData?code=@Model[0]",
+            data: '{}',
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: OnSuccess,
+            failure: function (response) {
+                alert(response.d);
+            },
+            error: function (response) {
+                alert(response.d);
+            }
+        });
+
+    });
+
+
+    function OnSuccess(response) {
+        $("#tblreviews").DataTable(
+            {
+                bLengthChange: true,
+                lengthMenu: [[10, 20, 50, -1], [10, 20, 50, "All"]],
+                bFilter: true,
+                bSort: true,
+                bPaginate: true,
+                data: response,
+                columns: [{ title: 'User Name', 'data': 'customerName', className: 'vertical' },
+                { title: 'Comment', 'data': 'comment', className: 'vertical' },
+                { title: 'Rate', 'data': 'rate', className: 'vertical' },
+                { title: 'Date And Time', 'data': 'dateAndTime', className: 'vertical' },
+                {
+                    title: 'Accept or Refuse', data: null, className: 'vertical' ,
+                    "render": function (data, type, full, meta) {
+                        if (full.isAvailable == false) {
+                            return '<a id="acorrect' + full.reviewId + '"  onclick=AcceptReview(' + full.reviewId + ');><i id="correct' + full.reviewId + '" class="fa fa-check" style="font-size:x-large; margin-right:7%; color:#00d900;cursor: pointer;"></i></a> <a id="awrong' + full.reviewId + '" style="pointer-events: none;" onclick=RefuseReview(' + full.reviewId + ');> <i id="wrong' + full.reviewId + '" class="fa fa-times" style="font-size:x-large; color:gray"></i></a> ';
+                        }
+                        else {
+                            return '<a id="acorrect' + full.reviewId + '" style="pointer-events: none;" onclick=AcceptReview(' + full.reviewId + ');><i id="correct' + full.reviewId + '" class="fa fa-check" style="font-size:x-large; margin-right:7%; color:gray;"></i></a> <a id="awrong' + full.reviewId + '" onclick=RefuseReview(' + full.reviewId + ');> <i id="wrong' + full.reviewId + '" class="fa fa-times" style="font-size:x-large; color:red;cursor: pointer;"></i></a> ';
+                        }
+                    }
+                }]
+            });
+    }
+
+    function AcceptReview(reviewid) {
+        $.ajax({
+            type: "POST",
+            url: "/Admin/Admin/CheckReview?ID=" + reviewid + "&&Num=1",
+            data: '{}',
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (result) {
+                if (result == "Accepted") {
+                    toastr.success('Accepted Done', '', { timeOut: 7000 });
+
+                    $('#wrong' + reviewid).css('color', 'red').css('cursor', 'pointer');
+                    $('#correct' + reviewid).css('color', 'gray').css('cursor', '');
+                    $('#acorrect' + reviewid).css('pointer-events', 'none');
+                    $('#awrong' + reviewid).css('pointer-events', '');
+
+                }
+                else {
+                    toastr.error('Something Wrong', '', { timeOut: 7000 });
+                }
+            }
+        });
+    }
+    function RefuseReview(reviewid) {
+        $.ajax({
+            type: "POST",
+            url: "/Admin/Admin/CheckReview?ID=" + reviewid + "&&Num=2",
+            data: '{}',
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (result) {
+                if (result == "Refused") {
+                    toastr.success('Refused Done', '', { timeOut: 7000 });
+                    $('#correct' + reviewid).css('color', '#00d900').css('cursor', 'pointer');
+                    $('#wrong' + reviewid).css('color', 'gray').css('cursor', '');
+                    $('#awrong' + reviewid).css('pointer-events', 'none');
+                    $('#acorrect' + reviewid).css('pointer-events', '');
+
+                }
+                else {
+                    toastr.error('Something Wrong', '', { timeOut: 7000 });
+                }
+            }
+        });
+    }
+
+
+</script>
+
+

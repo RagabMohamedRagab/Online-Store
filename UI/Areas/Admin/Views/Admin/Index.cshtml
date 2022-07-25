@@ -1,0 +1,554 @@
+﻿
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+
+    var Counter = ViewBag.Counter;
+
+    var SalesSum = ViewBag.SalesSum;
+
+    var ProductQuantity = ViewBag.ProductsQuantity;
+
+    var TopUsersData = ViewBag.TopUsersData;
+
+    var PEM = ViewBag.productsEarningsMonthly;
+
+}
+<head>
+    
+    <style>
+        #weatherWidget .currentDesc {
+            color: #ffffff !important;
+        }
+
+        .traffic-chart {
+            min-height: 335px;
+        }
+
+        #flotPie1 {
+            height: 150px;
+        }
+
+            #flotPie1 td {
+                padding: 3px;
+            }
+
+            #flotPie1 table {
+                top: 20px !important;
+                right: -10px !important;
+            }
+
+        .chart-container {
+            display: table;
+            min-width: 270px;
+            text-align: left;
+            padding-top: 10px;
+            padding-bottom: 10px;
+        }
+
+        #flotLine5 {
+            height: 105px;
+        }
+
+        #flotBarChart {
+            height: 150px;
+        }
+
+        #cellPaiChart {
+            height: 160px;
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <!-- Right Panel -->
+    <div id="right-panel">
+        <!-- Content -->
+        <div class="content">
+            <!-- Animated -->
+            <div class="animated fadeIn">
+                <!-- Widgets  -->
+                <div class="row">
+                    <div class="col-lg-3 col-md-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="stat-widget-five">
+                                    <div class="stat-icon dib flat-color-1">
+                                        <i class="pe-7s-cash"></i>
+                                    </div>
+                                    <div class="stat-content">
+                                        <div class="text-left dib">
+                                            <div class="stat-text"><span class="count">@Counter["Revenue"]</span>LE</div>
+                                            <div class="stat-heading">Revenue</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-3 col-md-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="stat-widget-five">
+                                    <div class="stat-icon dib flat-color-2">
+                                        <i class="pe-7s-cart"></i>
+                                    </div>
+                                    <div class="stat-content">
+                                        <div class="text-left dib">
+                                            <div class="stat-text"><span class="count">@Counter["SalesCount"]</span></div>
+                                            <div class="stat-heading">Sales</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-3 col-md-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="stat-widget-five">
+                                    <div class="stat-icon dib flat-color-3">
+                                        <i class="pe-7s-browser"></i>
+                                    </div>
+                                    <div class="stat-content">
+                                        <div class="text-left dib">
+                                            <div class="stat-text"><span class="count">@Counter["ProductsCounts"]</span></div>
+                                            <div class="stat-heading">Products</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-3 col-md-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="stat-widget-five">
+                                    <div class="stat-icon dib flat-color-4">
+                                        <i class="pe-7s-users"></i>
+                                    </div>
+                                    <div class="stat-content">
+                                        <div class="text-left dib">
+                                            <div class="stat-text"><span class="count">@Counter["UsersCount"]</span></div>
+                                            <div class="stat-heading">Clients</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /Widgets -->
+                <!--  Traffic  -->
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="box-title">Sales </h4>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-8">
+                                    <div class="card-body">
+                                        <!-- <canvas id="TrafficChart"></canvas>   -->
+                                        <div id="traffic-chart" class="traffic-chart"></div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="card-body">
+                                        <div class="progress-box progress-1" style="margin-bottom: 16px;">
+                                            <div class="por-txt">@SalesSum["Pros"] Processor sold (@((SalesSum["Pros"] * 100) / Counter["SalesCount"])%)</div>
+                                            <div class="progress mb-2" style="height: 5px;">
+                                                <div class="progress-bar bg-flat-color-1" role="progressbar" style="background: #66bb6a; width: @((SalesSum["Pros"] * 100) / Counter["SalesCount"])%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                                            </div>
+                                        </div>
+                                        <div class="progress-box progress-2" style="margin-bottom: 16px;">
+                                            <div class="por-txt">@SalesSum["Cases"] Case sold (@((SalesSum["Cases"] * 100) / Counter["SalesCount"])%)</div>
+                                            <div class="progress mb-2" style="height: 5px;">
+                                                <div class="progress-bar bg-flat-color-2" role="progressbar" style="background: #ef5350; width: @((SalesSum["Cases"]*100)/Counter["SalesCount"])%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                                            </div>
+                                        </div>
+                                        <div class="progress-box progress-2" style="margin-bottom: 16px;">
+                                            <div class="por-txt">@SalesSum["VGAs"] Graphics Card sold (@((SalesSum["VGAs"] * 100) / Counter["SalesCount"])%)</div>
+                                            <div class="progress mb-2" style="height: 5px;">
+                                                <div class="progress-bar bg-flat-color-3" role="progressbar" style="background: #5c6bc0; width: @((SalesSum["VGAs"] * 100) / Counter["SalesCount"])%; " aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>
+                                            </div>
+                                        </div>
+                                        <div class="progress-box progress-2" style="margin-bottom: 16px;">
+                                            <div class="por-txt">@SalesSum["HDDs"] HDD sold (@((SalesSum["HDDs"] * 100) / Counter["SalesCount"])%)</div>
+                                            <div class="progress mb-2" style="height: 5px;">
+                                                <div class="progress-bar bg-flat-color-4" role="progressbar" style="background: #d17905; width: @((SalesSum["HDDs"] * 100) / Counter["SalesCount"])%; " aria-valuenow="90" aria-valuemin="0" aria-valuemax="100"></div>
+                                            </div>
+                                        </div>
+                                        <div class="progress-box progress-2" style="margin-bottom: 16px;">
+                                            <div class="por-txt">@SalesSum["MBs"] MotherBoard sold (@((SalesSum["MBs"] * 100)/ Counter["SalesCount"])%)</div>
+                                            <div class="progress mb-2" style="height: 5px;">
+                                                <div class="progress-bar bg-flat-color-1" role="progressbar" style="background: #453d3f; width: @((SalesSum["MBs"]*100)/Counter["SalesCount"])%;" aria-valuenow="90" aria-valuemin="0" aria-valuemax="100"></div>
+                                            </div>
+                                        </div>
+                                        <div class="progress-box progress-2" style="margin-bottom: 16px;">
+                                            <div class="por-txt">@SalesSum["PSs"] Power Supply sold (@((SalesSum["PSs"] * 100) / Counter["SalesCount"])%)</div>
+                                            <div class="progress mb-2" style="height: 5px;">
+                                                <div class="progress-bar bg-flat-color-1" role="progressbar" style="background: #59922b; width: @((SalesSum["PSs"] * 100) / Counter["SalesCount"])%;" aria-valuenow="90" aria-valuemin="0" aria-valuemax="100"></div>
+                                            </div>
+                                        </div>
+                                        <div class="progress-box progress-2" style="margin-bottom: 16px;">
+                                            <div class="por-txt">@SalesSum["RAMs"] RAM sold (@((SalesSum["RAMs"] * 100) / Counter["SalesCount"])%)</div>
+                                            <div class="progress mb-2" style="height: 5px;">
+                                                <div class="progress-bar bg-flat-color-1" role="progressbar" style="background: #0544d3; width: @((SalesSum["RAMs"] * 100) / Counter["SalesCount"])%;" aria-valuenow="90" aria-valuemin="0" aria-valuemax="100"></div>
+                                            </div>
+                                        </div>
+                                        <div class="progress-box progress-2" style="margin-bottom: 16px;">
+                                            <div class="por-txt">@SalesSum["SSDs"] SSD sold (@((SalesSum["SSDs"] * 100) / Counter["SalesCount"])%)</div>
+                                            <div class="progress mb-2" style="height: 5px;">
+                                                <div class="progress-bar bg-flat-color-1" role="progressbar" style="background: #6b0392; width: @((SalesSum["SSDs"] * 100) / Counter["SalesCount"])%;" aria-valuenow="90" aria-valuemin="0" aria-valuemax="100"></div>
+                                            </div>
+                                        </div>
+                                    </div> <!-- /.card-body -->
+                                </div>
+                            </div> <!-- /.row -->
+                            <div class="card-body"></div>
+                        </div>
+                    </div><!-- /# column -->
+                </div>
+                <!--  /Traffic -->
+                <div class="clearfix"></div>
+                <!-- Orders -->
+                <div class="orders">
+                    <div class="row">
+                        <div class="col-xl-8">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h4 class="box-title">Top Buyers </h4>
+                                </div>
+                                <div class="card-body--">
+                                    <div class="table-stats order-table ov-h">
+                                        <table class="table " style=" text-align: center; ">
+                                            <thead>
+                                                <tr>
+                                                    <th class="serial">#</th>
+                                                    <th>ID</th>
+                                                    <th>Name</th>
+                                                    <th>Phone</th>
+                                                    <th>Quantity</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @for (int i = 0; i < TopUsersData.Count; i++)
+                                                {
+                                                    <tr>
+                                                        <td class="serial">@(i+1).</td>
+                                                        <td> @TopUsersData[i].ID </td>
+                                                        <td>  <span class="name">@TopUsersData[i].Name</span> </td>
+                                                        <td> 0<span class="product">@TopUsersData[i].Telephone</span> </td>
+                                                        <td><span class="count">@TopUsersData[i].Quantity</span></td>
+                                                    </tr>
+
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div> <!-- /.table-stats -->
+                                </div>
+                            </div> <!-- /.card -->
+                        </div>  <!-- /.col-lg-8 -->
+
+                        <div class="col-xl-4">
+                            <div class="row">
+                                <div class="col-lg-6 col-xl-12">
+                                    <div class="card br-0">
+                                        <div class="card-body">
+                                            <div class="chart-container ov-h" style=" height: 254px; ">
+                                                <div id="flotPie1" class="float-chart" style=" width: 262px; "></div>
+                                            </div>
+                                        </div>
+                                    </div><!-- /.card -->
+                                </div>
+
+                                <div hidden class="col-lg-6 col-xl-12">
+                                    <div class="card bg-flat-color-3  ">
+                                        <div class="card-body">
+                                            <h4 class="card-title m-0  white-color ">August 2018</h4>
+                                        </div>
+                                        <div class="card-body">
+                                            <div id="flotLine5" class="flot-line"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div> <!-- /.col-md-4 -->
+                    </div>
+                </div>
+                <!-- /.orders -->
+                <!-- To Do and Live Chat -->
+                <div class="row">
+                    <div class="col-lg-6">
+                        
+                    </div>
+
+                    <div class="col-lg-6">
+                       
+                    </div>
+                </div>
+                <!-- /To Do and Live Chat -->
+                <!-- Calender Chart Weather  -->
+                <div class="row h">
+                    <div class="col-md-12 col-lg-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <!-- <h4 class="box-title">Chandler</h4> -->
+                                <div class="calender-cont widget-calender">
+                                    <div id="calendar"></div>
+                                </div>
+                            </div>
+                        </div><!-- /.card -->
+                    </div>
+
+                    <div class="col-lg-4 col-md-6">
+                        <div class="card ov-h">
+                            <div class="card-body bg-flat-color-2">
+                                <div id="flotBarChart" class="float-chart ml-4 mr-4"></div>
+                            </div>
+                            <div id="cellPaiChart" class="float-chart"></div>
+                        </div><!-- /.card -->
+                    </div>
+                    <div class="col-lg-4 col-md-6">
+                        <div class="card weather-box">
+                            <h4 class="weather-title box-title">Weather</h4>
+                            <div class="card-body">
+                                <div class="weather-widget">
+                                    <div id="weather-one" class="weather-one"></div>
+                                </div>
+                            </div>
+                        </div><!-- /.card -->
+                    </div>
+                </div>
+                <!-- /Calender Chart Weather -->
+                
+            </div>
+            <!-- .animated -->
+        </div>
+        <!-- /.content -->
+    </div>
+
+    <!-- /.content -->
+    <script src="~/js/jquery.min.js"></script>
+    <!-- Chartist Chart -->
+    <script src="~/ElaAdmin-master/ElaAdmin-master/assets/css/Created/chartist.min.js"></script>
+    <script src="~/ElaAdmin-master/ElaAdmin-master/assets/css/Created/chartist-plugin-legend.min.js"></script>
+    <!--/ Chartist Chart -->
+    <!-- .plot -->
+    <script src="~/ElaAdmin-master/ElaAdmin-master/assets/css/Created/jquery.flot.min.js"></script>
+    <script src="~/ElaAdmin-master/ElaAdmin-master/assets/css/Created/jquery.flot.pie.min.js"></script>
+    <script src="~/ElaAdmin-master/ElaAdmin-master/assets/css/Created/jquery.flot.spline.min.js"></script>
+    <!-- /.plot -->
+    <!--Local Stuff-->
+    <script>
+        jQuery(document).ready(function ($) {
+            "use strict";
+
+            // Pie chart flotPie1
+            var piedata = [
+                { label: "Pros", data: [[1, @ProductQuantity["Pros"]]], color: '#66bb6a' },
+                { label: "Cases", data: [[1, @ProductQuantity["Cases"]]], color: '#ef5350' },
+                { label: "VGAs", data: [[1, @ProductQuantity["VGAs"]]], color: '#5c6bc0' },
+                { label: "HDDs", data: [[1, @ProductQuantity["HDDs"]]], color: '#d17905' },
+                { label: "MBs", data: [[1, @ProductQuantity["MBs"]]], color: '#453d3f' },
+                { label: "PSs", data: [[1, @ProductQuantity["PSs"]]], color: '#59922b' },
+                { label: "RAMs", data: [[1, @ProductQuantity["RAMs"]]], color: '#0544d3' },
+                { label: "SSDs", data: [[1, @ProductQuantity["SSDs"]]], color: '#6b0392' }
+            ];
+
+            $.plot('#flotPie1', piedata, {
+                series: {
+                    pie: {
+                        show: true,
+                        radius: 1,
+                        innerRadius: 0.65,
+                        label: {
+                            show: true,
+                            radius: 2 / 3,
+                            threshold: 1
+                        },
+                        stroke: {
+                            width: 0
+                        }
+                    }
+                },
+                grid: {
+                    hoverable: true,
+                    clickable: true
+                }
+            });
+            // Pie chart flotPie1  End
+            // cellPaiChart
+            var cellPaiChart = [
+                { label: "Direct Sell", data: [[1, 65]], color: '#5b83de' },
+                { label: "Channel Sell", data: [[1, 35]], color: '#00bfa5' }
+            ];
+            $.plot('#cellPaiChart', cellPaiChart, {
+                series: {
+                    pie: {
+                        show: true,
+                        stroke: {
+                            width: 0
+                        }
+                    }
+                },
+                legend: {
+                    show: false
+                }, grid: {
+                    hoverable: true,
+                    clickable: true
+                }
+
+            });
+            // cellPaiChart End
+            // Line Chart  #flotLine5
+            var newCust = [[0, 3], [1, 5], [2, 4], [3, 7], [4, 9], [5, 3], [6, 6], [7, 4], [8, 10]];
+
+            var plot = $.plot($('#flotLine5'), [{
+                data: newCust,
+                label: 'New Data Flow',
+                color: '#fff'
+            }],
+                {
+                    series: {
+                        lines: {
+                            show: true,
+                            lineColor: '#fff',
+                            lineWidth: 2
+                        },
+                        points: {
+                            show: true,
+                            fill: true,
+                            fillColor: "#ffffff",
+                            symbol: "circle",
+                            radius: 3
+                        },
+                        shadowSize: 0
+                    },
+                    points: {
+                        show: true,
+                    },
+                    legend: {
+                        show: false
+                    },
+                    grid: {
+                        show: false
+                    }
+                });
+            // Line Chart  #flotLine5 End
+            // Traffic Chart using chartist
+            if ($('#traffic-chart').length) {
+                var chart = new Chartist.Line('#traffic-chart', {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun' ,'Jul','Aug','Sep','Oct','Nov','Dec'],
+                    series: [
+                        [@PEM["Pro"][0], @PEM["Pro"][1], @PEM["Pro"][2], @PEM["Pro"][3], @PEM["Pro"][4], @PEM["Pro"][5],@PEM["Pro"][6], @PEM["Pro"][7], @PEM["Pro"][8], @PEM["Pro"][9], @PEM["Pro"][10], @PEM["Pro"][11]],
+                        [@PEM["Case"][0], @PEM["Case"][1], @PEM["Case"][2], @PEM["Case"][3], @PEM["Case"][4], @PEM["Case"][5],@PEM["Case"][6], @PEM["Case"][7], @PEM["Case"][8], @PEM["Case"][9], @PEM["Case"][10], @PEM["Case"][11]],
+                        [@PEM["VGA"][0], @PEM["VGA"][1], @PEM["VGA"][2], @PEM["VGA"][3], @PEM["VGA"][4], @PEM["VGA"][5],@PEM["VGA"][6], @PEM["VGA"][7], @PEM["VGA"][8], @PEM["VGA"][9], @PEM["VGA"][10], @PEM["VGA"][11]],
+                        [@PEM["HDD"][0], @PEM["HDD"][1], @PEM["HDD"][2], @PEM["HDD"][3], @PEM["HDD"][4], @PEM["HDD"][5],@PEM["HDD"][6], @PEM["HDD"][7], @PEM["HDD"][8], @PEM["HDD"][9], @PEM["HDD"][10], @PEM["HDD"][11]],
+                        [@PEM["MB"][0], @PEM["MB"][1], @PEM["MB"][2], @PEM["MB"][3], @PEM["MB"][4], @PEM["MB"][5],@PEM["MB"][6], @PEM["MB"][7], @PEM["MB"][8], @PEM["MB"][9], @PEM["MB"][10], @PEM["MB"][11]],
+                        [@PEM["PSu"][0], @PEM["PSu"][1], @PEM["PSu"][2], @PEM["PSu"][3], @PEM["PSu"][4], @PEM["PSu"][5],@PEM["PSu"][6], @PEM["PSu"][7], @PEM["PSu"][8], @PEM["PSu"][9], @PEM["PSu"][10], @PEM["PSu"][11]],
+                        [@PEM["RAM"][0], @PEM["RAM"][1], @PEM["RAM"][2], @PEM["RAM"][3], @PEM["RAM"][4], @PEM["RAM"][5],@PEM["RAM"][6], @PEM["RAM"][7], @PEM["RAM"][8], @PEM["RAM"][9], @PEM["RAM"][10], @PEM["RAM"][11]],
+                        [@PEM["SSD"][0], @PEM["SSD"][1], @PEM["SSD"][2], @PEM["SSD"][3], @PEM["SSD"][4], @PEM["SSD"][5],@PEM["SSD"][6], @PEM["SSD"][7], @PEM["SSD"][8], @PEM["SSD"][9], @PEM["SSD"][10], @PEM["SSD"][11]]
+                    ]
+                }, {
+                    low: 0,
+                    showArea: true,
+                    showLine: false,
+                    showPoint: false,
+                    fullWidth: true,
+                    axisX: {
+                        showGrid: true
+                    }
+                });
+
+                chart.on('draw', function (data) {
+                    if (data.type === 'line' || data.type === 'area') {
+                        data.element.animate({
+                            d: {
+                                begin: 2000 * data.index,
+                                dur: 2000,
+                                from: data.path.clone().scale(1, 0).translate(0, data.chartRect.height()).stringify(),
+                                to: data.path.clone().stringify(),
+                                easing: Chartist.Svg.Easing.easeOutQuint
+                            }
+                        });
+                    }
+                });
+            }
+            // Traffic Chart using chartist End
+            //Traffic chart chart-js
+            if ($('#TrafficChart').length) {
+                var ctx = document.getElementById("TrafficChart");
+                ctx.height = 150;
+                var myChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"],
+                        datasets: [
+                            {
+                                label: "Visit",
+                                borderColor: "rgba(4, 73, 203,.09)",
+                                borderWidth: "1",
+                                backgroundColor: "rgba(4, 73, 203,.5)",
+                                data: [0, 2900, 5000, 3300, 6000, 3250, 0]
+                            },
+                            {
+                                label: "Bounce",
+                                borderColor: "rgba(245, 23, 66, 0.9)",
+                                borderWidth: "1",
+                                backgroundColor: "rgba(245, 23, 66,.5)",
+                                pointHighlightStroke: "rgba(245, 23, 66,.5)",
+                                data: [0, 4200, 4500, 1600, 4200, 1500, 4000]
+                            },
+                            {
+                                label: "Targeted",
+                                borderColor: "rgba(40, 169, 46, 0.9)",
+                                borderWidth: "1",
+                                backgroundColor: "rgba(40, 169, 46, .5)",
+                                pointHighlightStroke: "rgba(40, 169, 46,.5)",
+                                data: [1000, 5200, 3600, 2600, 4200, 5300, 0]
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        tooltips: {
+                            mode: 'index',
+                            intersect: false
+                        },
+                        hover: {
+                            mode: 'nearest',
+                            intersect: true
+                        }
+
+                    }
+                });
+            }
+            //Traffic chart chart-js  End
+            // Bar Chart #flotBarChart
+            $.plot("#flotBarChart", [{
+                data: [[0, 18], [2, 8], [4, 5], [6, 13], [8, 5], [10, 7], [12, 4], [14, 6], [16, 15], [18, 9], [20, 17], [22, 7], [24, 4], [26, 9], [28, 11]],
+                bars: {
+                    show: true,
+                    lineWidth: 0,
+                    fillColor: '#ffffff8a'
+                }
+            }], {
+                grid: {
+                    show: false
+                }
+            });
+            // Bar Chart #flotBarChart End
+        });
+        $(document).ready(function () {
+            $('.h').hide();
+        });
+    </script>
+</body>

@@ -1,0 +1,317 @@
+﻿@model DataModel.Models.GraphicsCard
+
+@{
+    ViewData["Title"] = "Add Vga";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+    var brands = ViewBag.Brands;
+}
+<style>
+    .container {
+        position: relative;
+        min-width: 170px;
+        max-height: 140px;
+    }
+
+    .image {
+        display: block;
+        width: 100%;
+        height: auto;
+        max-height: 140px;
+        min-height: 140px;
+    }
+
+    .overlay {
+        border-radius: 5px;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        height: 100%;
+        width: 83%;
+        opacity: 0;
+        transition: .3s ease;
+        background-color: #00000078;
+    }
+
+    .container:hover .overlay {
+        opacity: 1;
+    }
+
+    .icon {
+        font-size: 100px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        -ms-transform: translate(-50%, -50%);
+        text-align: center;
+        cursor: pointer;
+    }
+</style>
+
+<div class="content" style="background: #f1f2f7;">
+    <div class="breadcrumbs">
+        <div class="breadcrumbs-inner">
+            <div class="row m-0">
+                <div class="col-sm-4">
+                    <div class="page-header float-left">
+                        <div class="page-title">
+                            <h1>Dashboard</h1>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-8">
+                    <div class="page-header float-right">
+                        <div class="page-title">
+                            <ol class="breadcrumb text-right">
+                                <li><a href="/Admin/Admin/Index">Dashboard</a></li>
+                                <li class="active"> Grahpics Card </li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="animated fadeIn">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header" style=" display: flex; justify-content: space-between;">
+                            <strong class="card-title">Add Graphics Card</strong>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label class="control-label">Images</label>
+                                    <div class="form-group" style="display:flex">
+                                        @for (int i = 1; i <= 3; i++)
+                                        {
+                                            <div class="container" id="container_@i">
+                                                <i id="icon_@i" class="fa fa-plus icon"></i>
+                                                <img id="img_@i" src="" class="image img-responsive img-thumbnail">
+                                                <div class="overlay">
+                                                    <label for="photo_@i"><i class="fa fa-plus icon"></i></label>
+                                                    <input type="file" id="photo_@i" style="display:none;visibility:none;" onchange="getImage(this.files[0],@i);" />
+                                                </div>
+                                                <span id="validimage_@i" style="display: none; font-size: 13px; color: #D10024">Required field</span>
+                                            </div>
+                                        }
+                                    </div>
+                                    <div class="form-group" style=" padding-top: 20px;">
+                                        <label class="control-label">Code</label>
+                                        <input id="code" placeholder="CAS10" class="form-control" />
+                                        <span id="validcode" style="display: none; font-size: 13px; color: #D10024">Required field</span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label">Name</label>
+                                        <input id="name" class="form-control" />
+                                        <span id="validname" style="display: none; font-size: 13px; color: #D10024">Required field</span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label">Brand</label>
+                                        <select id="brand" class="form-control">
+                                            @if (brands != null)
+                                            {
+                                                foreach (var item in brands)
+                                                {
+                                                    <option value="@item.BrandId">@item.BrandName</option>
+                                                }
+                                            }
+                                        </select>
+                                        <span id="validbrand" style="display: none; font-size: 13px; color: #D10024">Required field</span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label">Price</label>
+                                        <input id="price" class="form-control" />
+                                        <span id="validprice" style="display: none; font-size: 13px; color: #D10024">Required field</span>
+                                        <span id="validprice1" style="display: none; font-size: 13px; color: #D10024">You must write only numbers</span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label">Quantity</label>
+                                        <input id="quantity" class="form-control" />
+                                        <span id="validquantity" style="display: none; font-size: 13px; color: #D10024">Required field</span>
+                                        <span id="validquantity1" style="display: none; font-size: 13px; color: #D10024">You must write only numbers</span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label">VRam</label>
+                                        <input id="vram" class="form-control" />
+                                        <span id="validvram" style="display: none; font-size: 13px; color: #D10024">Required field</span>
+                                        <span id="validvram1" style="display: none; font-size: 13px; color: #D10024">You must write only numbers</span>
+                                    </div>
+                                    <div class="form-group">
+                                        <input id="btnadd" type="button" value="Add" class="btn btn-default" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <a href="/Admin/Admin/GraphicsCard">Back to List</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="content" style="background: #f1f2f7;">
+    <div class="animated fadeIn">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header" style=" display: flex; justify-content: space-between;">
+                        <strong class="card-title">Deleted Graphics Card Table</strong>
+                    </div>
+                    <div class="card-body">
+                        <table id="tblDeletedVga" class="table table-striped table-bordered">
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div><!-- .animated -->
+</div><!-- .content -->
+
+<script src="~/js/jquery.min.js"></script>
+<script type="text/javascript">
+    $(function() {
+        $.ajax({
+            type: "POST",
+            url: "/Admin/Admin/GraphicsCardData?data=DeletedData",
+            data: '{}',
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: OnSuccess,
+            failure: function(response) {
+                alert(response.d);
+            },
+            error: function(response) {
+                alert(response.d);
+            }
+        });
+    });
+    $(document).ready(function() {
+
+
+        $('#btnadd').click(function() {
+            $('#validcode').hide();
+            $('#validname').hide();
+            $('#validbrand').hide();
+            $('#validimage_1').hide();
+            $('#validimage_2').hide();
+            $('#validimage_3').hide();
+            $('#validprice').hide();
+            $('#validprice1').hide();
+            $('#validquantity').hide();
+            $('#validquantity1').hide();
+            $('#validvram').hide();
+            $('#validvram1').hide();
+
+            var code = $('#code').val();
+            var name = $('#name').val();
+            var brand = $('#brand').val();
+            var photo_1 = $('#photo_1').val();
+            var photo_2 = $('#photo_2').val();
+            var photo_3 = $('#photo_3').val();
+            var price = $('#price').val();
+            var quantity = $('#quantity').val();
+            var vram = $('#vram').val();
+            if (code == null || code == undefined || $.trim(code) == "" || name == null || name == undefined || $.trim(name) == "" || brand == null || brand == undefined || photo_1 == null || photo_1 == undefined || $.trim(photo_1) == "" || photo_2 == null || photo_2 == undefined || $.trim(photo_2) == "" || photo_3 == null || photo_3 == undefined || $.trim(photo_3) == "" || price == null || price == undefined || $.trim(price) == "" || jQuery.isNumeric(price) != true || quantity == null || quantity == undefined || $.trim(quantity) == "" || jQuery.isNumeric(quantity) != true
+                || vram == null || vram == undefined || $.trim(vram) == "" || jQuery.isNumeric(vram) != true) {
+                if (code == null || code == undefined || $.trim(code) == "") {
+                    $('#validcode').show();
+                }
+                if (name == null || name == undefined || $.trim(name) == "") {
+                    $('#validname').show();
+                }
+                if (brand == null || brand == undefined) {
+                    $('#validbrand').show();
+                }
+                if (photo_1 == null || photo_1 == undefined || $.trim(photo_1) == "") {
+                    $('#validimage_1').show();
+                }
+                if (photo_2 == null || photo_2 == undefined || $.trim(photo_2) == "") {
+                    $('#validimage_2').show();
+                }
+                if (photo_3 == null || photo_3 == undefined || $.trim(photo_3) == "") {
+                    $('#validimage_3').show();
+                }
+                if (price == null || price == undefined || $.trim(price) == "") {
+                    $('#validprice').show();
+                }
+                else if (jQuery.isNumeric(price) != true) {
+                    $('#validprice1').show();
+                }
+                if (quantity == null || quantity == undefined || $.trim(quantity) == "") {
+                    $('#validquantity').show();
+                }
+                else if (jQuery.isNumeric(quantity) != true) {
+                    $('#validquantity1').show();
+                }
+                if (vram == null || vram == undefined || $.trim(vram) == "") {
+                    $('#validvram').show();
+                }
+                else if (jQuery.isNumeric(vram) != true) {
+                    $('#validvram1').show();
+                }
+            }
+            else {
+                debugger;
+                $.ajax({
+                    url: "/Admin/Admin/CreateVga?Vgacode=" + code + "&Vganame=" + name + "&VgabrandId=" + brand + "&Vgaprice=" + price + "&Vgaquantity=" + quantity + "&Vram=" + vram + "&Photo_1=" + photo_1 + "&Photo_2=" + photo_2 + "&Photo_2=" + photo_3,
+                    type: "Post",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function(result) {
+                        if (result == "VgaAddedDone") {
+                            setItemStorage("AddUpdateVga", "Add");
+                            window.location = "/Admin/Admin/GraphicsCard";
+                        }
+                    }
+                });
+            }
+
+        });
+    });
+
+    function OnSuccess(response) {
+        $("#tblDeletedVga").DataTable(
+            {
+                bLengthChange: true,
+                lengthMenu: [[10, 20, 50, -1], [10, 20, 50, "All"]],
+                bFilter: true,
+                bSort: true,
+                bPaginate: true,
+                data: response,
+                columns: [{ title: 'Code', 'data': 'vgacode', className: 'vertical' },
+                { title: 'Name', 'data': 'vganame', className: 'vertical' },
+                { title: 'Brand', 'data': 'brandName', className: 'vertical' },
+                { title: 'Price', 'data': 'vgaprice', className: 'vertical' },
+                { title: 'Quantity', 'data': 'vgaquantity', className: 'vertical' },
+                { title: 'VRam(GB)', 'data': 'vram', className: 'vertical' },
+                {
+                    title: '', data: null, className: 'fontawesomevertical',
+                    "render": function(data, type, full, meta) {
+                        return '<a href="/Admin/Admin/AddDeletedGraphicsCard?code=' + full.vgacode + '"><i style="color:darkblue; font-size:large;" class="fa fa-solid fa-plus"></i></a>';
+                    }
+                }]
+
+            });
+    };
+    function getImage(imagevalue, image) {
+        debugger;
+        if (imagevalue) {
+            let reader = new FileReader();
+            reader.onload = function(event) {
+                $('#icon_' + image).remove();
+                $('#img_' + image).attr("src", event.target.result);
+            };
+            reader.readAsDataURL(imagevalue);
+        }
+    }
+</script>
+
+
